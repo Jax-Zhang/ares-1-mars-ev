@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style></head><body><title>ARES-1 火星装甲车</title>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style></head><body><title>ARES-1 火星装甲电动车</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -239,7 +239,7 @@ svg text{font-family:var(--f-body)}
   <header>
     <div class="brand">
       <h1 id="brandName">ARES<b>-1</b></h1>
-      <p id="brandSub">火星装甲电动车 · 从立项到下线的整车开发记录</p>
+      <p id="brandSub">火星装甲电动车 · 整车研发与制造全流程平台</p>
       <div class="right"><button class="upbtn" id="openUpload" type="button">＋ 更换车型 / 上传模型</button><span class="tag">MARS ARMORED EV · DEV PROGRAM</span></div>
     </div>
     <nav class="gates" id="gates" aria-label="开发阶段"></nav>
@@ -688,24 +688,29 @@ parts.forEach(p => { const s = STATIONS.find(s => s.ops.some(o => (o[4]||[]).inc
 let hi3d = null, hi3dState = 'loading', hi3dPct = 0, hiWheelsOn = false;
 const procBody = bodyPart.obj.children.filter(o => o.userData.proc);
 async function readBody(res, onBytes){ const rd = res.body.getReader(); const out = []; for(;;){ const { done, value } = await rd.read(); if (done) break; out.push(value); onBytes(value.length); } return out; }
+// light copies (fewer faces, smaller textures) live in lite/; ?hq=1 loads the original Hi3D files
+const ASSET = (async () => { if (new URLSearchParams(location.search).has('hq')) return '';
+  const r = await fetch('lite/parts/manifest.json').catch(() => null); return r && r.ok ? 'lite/' : ''; })();
+let assetDir = null; ASSET.then(a => { assetDir = a; });
 async function fetchHi3d(){
+  const A = await ASSET;
   let chunks = [], total = 0, got = 0;
   const tick = n => { got += n; hi3dPct = total ? Math.min(99, Math.round(got/total*100)) : 0; renderHud(); };
-  const mf = await fetch('model/manifest.json').catch(() => null);
+  const mf = await fetch(A+'model/manifest.json').catch(() => null);
   if (mf && mf.ok) {
     const m = await mf.json(); total = m.size;
     if (m.encoding === 'base64') {
       total = m.size*4/3;
-      const lists = await Promise.all(m.parts.map(async n => { const r = await fetch('model/'+n); if (!r.ok) throw new Error(n);
+      const lists = await Promise.all(m.parts.map(async n => { const r = await fetch(A+'model/'+n); if (!r.ok) throw new Error(n);
         const raw = await readBody(r, tick); const u = new Uint8Array(raw.reduce((a,c)=>a+c.length,0)); let o = 0; raw.forEach(c => { u.set(c,o); o += c.length; });
         const bin = atob(new TextDecoder().decode(u).trim()); const out = new Uint8Array(bin.length); for (let i=0;i<bin.length;i++) out[i] = bin.charCodeAt(i); return [out]; }));
       chunks = lists.flat();
     } else {
-      const lists = await Promise.all(m.parts.map(async n => { const r = await fetch('model/'+n); if (!r.ok) throw new Error(n); return readBody(r, tick); }));
+      const lists = await Promise.all(m.parts.map(async n => { const r = await fetch(A+'model/'+n); if (!r.ok) throw new Error(n); return readBody(r, tick); }));
       chunks = lists.flat();
     }
   } else {
-    const r = await fetch('model/ares1.glb'); if (!r.ok) throw new Error('missing');
+    const r = await fetch(A+'model/ares1.glb'); if (!r.ok) throw new Error('missing');
     total = +r.headers.get('content-length') || 0; chunks = await readBody(r, tick);
   }
   const buf = new Uint8Array(chunks.reduce((a,c)=>a+c.length,0)); let o = 0; chunks.forEach(c => { buf.set(c,o); o += c.length; });
@@ -857,10 +862,10 @@ async function fetchModelEntry(dir, e){
   const buf = new Uint8Array(chunks.reduce((a,c) => a+c.length, 0)); let o = 0; chunks.forEach(c => { buf.set(c,o); o += c.length; }); return buf.buffer;
 }
 async function loadPartModels(){
-  const r = await fetch('parts/manifest.json').catch(() => null); if (!r || !r.ok) return;
+  const A = await ASSET; const r = await fetch(A+'parts/manifest.json').catch(() => null); if (!r || !r.ok) return;
   const mf = await r.json(); partModelsTotal = Object.keys(mf).length; renderHud();
   for (const [key, e] of Object.entries(mf)) {
-    try { const buf = await fetchModelEntry('parts/', e);
+    try { const buf = await fetchModelEntry(A+'parts/', e);
       const gltf = await new Promise((ok, bad) => new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).parse(buf, '', ok, bad));
       partStatus = `零件优化 ${partModels+1}/${partModelsTotal}`; renderHud();
       await simplifyScene(gltf.scene, PART_TRIS[key] || 120000);
@@ -877,7 +882,7 @@ async function loadPartModels(){
 const LINE_TRIS = { carrier:80000, agv:30000, rack:40000, worker:30000, gantry:60000, lift:50000, filler:50000, tunnel:80000 },
   LINE_TEX = { carrier:1024, agv:512, rack:512, worker:512, gantry:1024, lift:1024, filler:1024, tunnel:1024 };
 async function loadLineModels(){
-  const r = await fetch('line/manifest.json').catch(() => null); if (!r || !r.ok) return; const mf = await r.json();
+  const A = await ASSET; const r = await fetch(A+'line/manifest.json').catch(() => null); if (!r || !r.ok) return; const mf = await r.json();
   // fit: longest horizontal axis along x (or keep upright for people), scaled to a target length / height, standing on y = 0
   const fit = (obj, size, byHeight) => { const w = new THREE.Group(); w.add(obj); obj.updateMatrixWorld(true);
     let b = new THREE.Box3().setFromObject(obj), s = b.getSize(new THREE.Vector3());
@@ -885,7 +890,7 @@ async function loadLineModels(){
     const c = b.getCenter(new THREE.Vector3()), k = size/(byHeight ? s.y : s.x);
     obj.scale.setScalar(k); obj.position.set(-c.x*k, -b.min.y*k, -c.z*k); return w; };
   for (const key of ['carrier','agv','rack','worker','gantry','lift','filler','tunnel']) { if (!mf[key]) continue;
-    try { const buf = await fetchModelEntry('line/', mf[key]);
+    try { const buf = await fetchModelEntry(A+'line/', mf[key]);
       const sc = (await new Promise((ok, bad) => new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).parse(buf, '', ok, bad))).scene;
       await simplifyScene(sc, LINE_TRIS[key]); shrinkTextures(sc, LINE_TEX[key]);
       const SIZE = { carrier:[4.8], agv:[1.6], rack:[1.7], worker:[1.75,true], gantry:[6.3], lift:[2.8], filler:[2.0,true], tunnel:[5.2] }[key];
@@ -907,8 +912,8 @@ async function loadLineModels(){
 const SCENE_TRIS = { lander:200000, astronaut:120000, mecha:250000 }, SCENE_TEX = { lander:2048, astronaut:1024, mecha:2048 };
 let mechaModel = null;
 async function loadSceneModels(){
-  const r = await fetch('scene/manifest.json').catch(() => null); if (!r || !r.ok) return; const mf = await r.json();
-  const get = async key => { const buf = await fetchModelEntry('scene/', mf[key]);
+  const A = await ASSET; const r = await fetch(A+'scene/manifest.json').catch(() => null); if (!r || !r.ok) return; const mf = await r.json();
+  const get = async key => { const buf = await fetchModelEntry(A+'scene/', mf[key]);
     const g = await new Promise((ok, bad) => new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).parse(buf, '', ok, bad));
     await simplifyScene(g.scene, SCENE_TRIS[key]); shrinkTextures(g.scene, SCENE_TEX[key]); return g.scene; };
   const fit = (obj, height) => { const w = new THREE.Group(); w.add(obj); obj.updateMatrixWorld(true);
@@ -919,7 +924,7 @@ async function loadSceneModels(){
       if (key === 'lander') { lander.children.forEach(c => c.visible = false); lander.add(fit(sc, 11)); }
       if (key === 'astronaut') { const fitted = fit(sc, 1.85);   // fit once, then copy the fitted result: both figures are exactly 1.85 m
         astronauts.forEach((a,i) => { a.children.forEach(c => c.visible = false); const m = i ? fitted.clone(true) : fitted; m.scale.set(1,1,1); a.add(m); a.userData.model = m; a.userData.parts = null; }); }
-      if (key === 'mecha') { mecha.children.forEach(c => c.visible = false); mechaModel = fit(sc, 5.2); mecha.add(mechaModel); }
+      if (key === 'mecha') { mecha.children.forEach(c => c.visible = false); rigMecha(sc); mechaModel = fit(sc, 5.2); mecha.add(mechaModel); }
     } catch (e) { console.warn('scene model', key, e); } }
 }
 function fitPartModel(p, src, key){
@@ -1264,15 +1269,93 @@ const mechaParts = {};
     leg.add(M(chamferBox(.6,.2,.8,.06), or, 0,-1.95,.1)); });
 }
 const flash = M(new THREE.SphereGeometry(1,24,16), new THREE.MeshBasicMaterial({ color:0xdff3ff, transparent:true, opacity:0, blending:THREE.AdditiveBlending, depthWrite:false }), 0,1.6,0); alienFx.add(flash);
+// The Hi3D mecha is one rigid mesh. Give it a skeleton so the arms punch and the legs kick.
+// Joints sit at fractions of the mesh bounding box (u = across, h = up), read off its silhouette:
+// arms hang beside the torso with a clear gap, legs split below 45 % height in a wide stance.
+const MJ = { hip:[.5,.47], hipL:[.33,.46], kneeL:[.17,.25], shL:[.19,.70], elL:[.13,.57] };
+const MECHA_FS = -1;   // sign of a forward swing for a limb that hangs down (model faces +z)
+let mechaRig = null;
+function rigMecha(root){
+  let mesh = null; root.traverse(o => { if (o.isMesh && !mesh) mesh = o; }); if (!mesh) return;
+  const g = mesh.geometry; g.computeBoundingBox(); const bb = g.boundingBox, mn = bb.min, sz = bb.getSize(new THREE.Vector3()), zc = (bb.min.z + bb.max.z)/2;
+  const P = (u,h) => new THREE.Vector3(mn.x + u*sz.x, mn.y + h*sz.y, zc), J = { hip:P(...MJ.hip) };
+  for (const k of ['hip','knee','sh','el']) { const [u,h] = MJ[k+'L']; J[k+'L'] = P(u,h); J[k+'R'] = P(1-u,h); }
+  const sk = new THREE.SkinnedMesh(g, mesh.material);
+  sk.position.copy(mesh.position); sk.quaternion.copy(mesh.quaternion); sk.scale.copy(mesh.scale);
+  sk.castShadow = mesh.castShadow; sk.receiveShadow = mesh.receiveShadow; sk.userData = mesh.userData; sk.frustumCulled = false;
+  mesh.parent.add(sk); mesh.parent.remove(mesh);
+  const B = (parent, at, from) => { const b = new THREE.Bone(); b.position.copy(at).sub(from); parent.add(b); return b; };
+  const O = new THREE.Vector3(), rootB = B(sk, J.hip, O), torso = B(rootB, J.hip, J.hip);
+  const thighL = B(rootB, J.hipL, J.hip), shinL = B(thighL, J.kneeL, J.hipL), thighR = B(rootB, J.hipR, J.hip), shinR = B(thighR, J.kneeR, J.hipR);
+  const armL = B(torso, J.shL, J.hip), foreL = B(armL, J.elL, J.shL), armR = B(torso, J.shR, J.hip), foreR = B(armR, J.elR, J.shR);
+  const bones = [rootB, torso, thighL, shinL, thighR, shinR, armL, foreL, armR, foreR];
+  // weights: smooth hand-over across each joint so the mesh bends instead of tearing
+  const sm = (a,b,x) => { const t = Math.min(1, Math.max(0, (x-a)/(b-a))); return t*t*(3-2*t); };
+  const pos = g.attributes.position, n = pos.count, SI = new Uint16Array(n*4), SW = new Float32Array(n*4);
+  const kneeH = MJ.kneeL[1], elH = MJ.elL[1];
+  for (let i=0;i<n;i++){
+    const u = (pos.getX(i) - mn.x)/sz.x, h = (pos.getY(i) - mn.y)/sz.y, left = u < .5;
+    // arm/torso gap in the silhouette: left arm ends near u .25, torso spans u .28–.73, right arm starts near u .77
+    const armSide = left ? 1 - sm(.25,.275,u) : sm(.745,.77,u);
+    let w = [[1,1]];   // [bone, weight]; bone 1 = torso
+    if (armSide > 0 && h > .43 && h < .76) {
+      const wa = armSide*sm(.43,.46,h)*(1 - sm(.70,.75,h)), fore = 1 - sm(elH - .03, elH + .03, h), up = left ? 6 : 8;
+      w = [[1, 1-wa], [up, wa*(1-fore)], [up+1, wa*fore]];
+    } else if (h < .50) {
+      const wl = 1 - sm(.43,.50,h), shin = 1 - sm(kneeH - .04, kneeH + .04, h), th = left ? 2 : 4;
+      w = [[1, 1-wl], [th, wl*(1-shin)], [th+1, wl*shin]];
+    }
+    w.forEach(([b,v],k) => { SI[i*4+k] = b; SW[i*4+k] = v; });
+  }
+  g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(SI, 4));
+  g.setAttribute('skinWeight', new THREE.Float32BufferAttribute(SW, 4));
+  sk.updateMatrixWorld(true); sk.bind(new THREE.Skeleton(bones));
+  mechaRig = { rootB, torso, thighL, shinL, thighR, shinR, armL, foreL, armR, foreR };
+}
+// Five strikes, one alien each: right jab, left jab, right front kick, left kick, right finisher.
+// [start, length, kind, side] in seconds after the mecha stands up (t = 6.6 s); the hit lands 45 % into a strike.
+const STRIKES = [[.15,.55,'punch',1],[.6,.55,'punch',-1],[1.0,.8,'kick',1],[1.85,.8,'kick',-1],[2.7,.6,'punch',1]];
+const KO = STRIKES.map(([s,l]) => 6.6 + s + l*.45);
+function mechaPose(tb){
+  const sm = (a,b,x) => { const t = Math.min(1, Math.max(0, (x-a)/(b-a))); return t*t*(3-2*t); };
+  const F = MECHA_FS, guard = sm(0,.4,tb)*(1 - sm(3.6,4,tb)), bob = Math.sin(tb*7)*.04*guard;
+  // fighting stance: fists up, knees soft
+  const p = { shL:F*.55*guard, elL:F*1.35*guard, shR:F*.55*guard, elR:F*1.35*guard, thL:F*.12*guard, knL:-F*.25*guard, thR:F*.12*guard, knR:-F*.25*guard,
+    twist:0, lean:0, lunge:0, drop:bob };
+  for (const [s0, len, kind, side] of STRIKES) {
+    const x = (tb - s0)/len; if (x <= 0 || x >= 1) continue;
+    const c = sm(0,.35,x)*(1 - sm(.35,.5,x)), e = sm(.3,.5,x)*(1 - sm(.7,1,x));   // chamber, extension
+    const S = side > 0 ? 'R' : 'L', O = side > 0 ? 'L' : 'R';
+    if (kind === 'punch') {
+      p['sh'+S] = F*(.55*guard*(1-e) - .3*c + 1.55*e); p['el'+S] = F*(1.35*guard*(1-e) + .5*c + .05*e);
+      p.twist += side*(.2*c - .45*e); p.lunge += .35*e; p['th'+O] += F*.2*e; p['kn'+O] += -F*.35*e;
+    } else {
+      p['th'+S] = F*(1.1*c + 1.45*e); p['kn'+S] = -F*(1.9*c*(1 - e));                 // knee up, then snap the shin out
+      p['kn'+O] += -F*.35*(c+e); p.lean += -F*.18*e; p.lunge += .25*e; p.twist += side*.15*e;
+      p['sh'+S] += -F*.35*e; p['sh'+O] += F*.3*e;                                      // arms counter-swing for balance
+    }
+  }
+  return p;
+}
+function applyMechaPose(p){
+  if (mechaRig) { const r = mechaRig;
+    r.armL.rotation.x = p.shL; r.foreL.rotation.x = p.elL; r.armR.rotation.x = p.shR; r.foreR.rotation.x = p.elR;
+    r.thighL.rotation.x = p.thL; r.shinL.rotation.x = p.knL; r.thighR.rotation.x = p.thR; r.shinR.rotation.x = p.knR;
+    r.torso.rotation.set(p.lean, p.twist, 0); }
+  if (mechaModel) { mechaModel.position.z = -MECHA_FS*p.lunge; mechaModel.position.y = -Math.abs(p.drop); mechaModel.rotation.set(0, 0, 0); }
+  // placeholder mecha (shown until the Hi3D model loads) follows the same moves
+  mechaParts['arm-1'].rotation.x = p.shL; mechaParts['fore-1'].rotation.x = p.elL; mechaParts['arm1'].rotation.x = p.shR; mechaParts['fore1'].rotation.x = p.elR;
+  mechaParts['leg-1'].rotation.x = p.thL; mechaParts['leg1'].rotation.x = p.thR; mechaParts.torso.rotation.y = p.twist;
+}
 function stepAliens(t, dt){
   const R = t < 2 ? lerp(7.5, 3.4, ease(t/2)) : 3.4;
   ALIENS.forEach((a,i) => {
     const base = new THREE.Vector3(Math.cos(a.ang)*R*1.35, 0, Math.sin(a.ang)*R);
-    if (t < 8.1) { a.g.position.copy(base); a.g.position.y = t < 2 ? Math.abs(Math.sin(t*9+i))*.12 : Math.abs(Math.sin(t*14+i))*.05;
+    if (t < KO[i]) { a.g.position.copy(base); a.g.position.y = t < 2 ? Math.abs(Math.sin(t*9+i))*.12 : Math.abs(Math.sin(t*14+i))*.05;
       a.g.rotation.set(0, Math.atan2(-base.x, -base.z), 0);
       a.arm.rotation.x = t < 2 ? Math.sin(t*9+i)*.4 : -1.6 + Math.sin(t*10 + i*1.7)*1.4;   // swinging the weapon
       a.fly.set(base.x, 0, base.z).normalize().multiplyScalar(7 + i).setY(9 + i); a.home.copy(a.g.position); }
-    else { const d = t - 8.1; a.g.position.set(a.home.x + a.fly.x*d, a.home.y + a.fly.y*d - .5*9.8*d*d, a.home.z + a.fly.z*d);   // knocked flying
+    else { const d = t - KO[i]; a.g.position.set(a.home.x + a.fly.x*d, a.home.y + a.fly.y*d - .5*9.8*d*d, a.home.z + a.fly.z*d);   // knocked flying
       a.g.rotation.set(a.spin.x*d, a.spin.y*d, a.spin.z*d); a.g.visible = a.g.position.y > -3; }
     if (t < .05) a.g.visible = true;
   });
@@ -1289,7 +1372,7 @@ function stepAliens(t, dt){
   });
   sparks.dirty();
   // shockwave at the mecha moment
-  const sd = t - 7.8; shock.visible = sd > 0 && sd < 1.2; if (shock.visible) { shock.scale.setScalar(.5 + sd*9); shock.material.opacity = .9*(1 - sd/1.2); shock.position.set(rig.x, 1.2, 0); }
+  const sd = t - (KO.filter(k => k <= t).pop() ?? -9); shock.visible = sd > 0 && sd < 1.2; if (shock.visible) { shock.scale.setScalar(.5 + sd*9); shock.material.opacity = .9*(1 - sd/1.2); shock.position.set(rig.x, 1.2, 0); }
 }
 
 const VIZ = {
@@ -1358,7 +1441,7 @@ const VIZ = {
       series:[['施加场强','--accent',imApp]], lims:[[100,'标准要求 100 V/m']], step:.005 } },
 
   V10: { title:'彩蛋 · 外星生物突袭', dur:14, cam:[9,5.5,11],
-    phase:u => { const t = 14*u; return t < 2 ? '一群火星原住民拿着石斧、石矛冲了过来……' : (t < 5 ? '石器雨点般砸在不锈钢外骨骼上：叮叮当当，全部弹开' : (t < 7.8 ? '变形！车身折叠重组，化身 5 米高的人形机甲' : (t < 10 ? '冲击波释放：来袭者全部被打飞' : '恢复行驶形态，继续赶路'))); },
+    phase:u => { const t = 14*u; return t < 2 ? '一群火星原住民拿着石斧、石矛冲了过来……' : (t < 5 ? '石器雨点般砸在不锈钢外骨骼上：叮叮当当，全部弹开' : (t < 7.8 ? '变形！车身折叠重组，化身 5 米高的人形机甲' : (t < 10.6 ? '左右直拳、前踢、侧踢：一击打飞一个来袭者' : '恢复行驶形态，继续赶路'))); },
     on(){ alienFx.visible = true; sparks.p.visible = true; gas.p.visible = true; alienHits = 0; ALIENS.forEach(a => a.g.visible = true); },
     off(){ alienFx.visible = false; sparks.p.visible = false; gas.p.visible = false; dmu.scale.setScalar(1); dmu.visible = true; },
     frame(u, dt){ const t = 14*u; if (t < .1) alienHits = 0; stepAliens(t, dt);
@@ -1371,14 +1454,10 @@ const VIZ = {
       const fp = Math.max(0, 1 - Math.abs(toBot - .5)*4); flash.material.opacity = fp*.85; flash.scale.setScalar(.5 + fp*3.5);
       // mecha moves: wind-up, punch towards the aliens (shockwave at 7.8 s), idle sway
       const tb = t - 6.6;
-      mechaParts['arm1'].rotation.x = tb > 0 && tb < 1.6 ? (tb < .9 ? -tb*2.2 : -1.98 + (tb-.9)*5) : Math.sin(t*2)*.08;
-      mechaParts['arm-1'].rotation.x = tb > .3 && tb < 1.9 ? -(Math.min(tb-.3,1))*1.6 : Math.sin(t*2+1)*.08;
-      mechaParts['fore1'].rotation.x = tb > 0 && tb < 1.6 ? -.6 : -.15; mechaParts.torso.rotation.y = tb > 0 && tb < 1.6 ? Math.sin(tb*4)*.35 : 0;
-      if (mechaModel) { const pw = tb > 0 && tb < 1.6 ? Math.sin(tb/1.6*Math.PI) : 0; mechaModel.rotation.x = pw*.22; mechaModel.position.z = pw*.6; mechaModel.rotation.y = Math.sin(t*1.5)*.06; }
-      mechaParts['leg1'].rotation.x = Math.sin(t*2)*.05; mechaParts['leg-1'].rotation.x = -Math.sin(t*2)*.05;
+      applyMechaPose(mechaPose(tb));
       rig.spinRate = toBot > 0 ? 8 : null; rig.dyFn = null;
       stepGas(dt, 'jet', (t > 4.8 && t < 6.2) || (t > 10.6 && t < 12) ? .7 : 0); },
-    read(u){ const t = 14*u; return [['攻击方式','石斧 / 石矛 / 投石',''],['命中次数',String(alienHits),'次'],['车身损伤','0','%','ok'],['当前形态',t >= 5 && t < 12.5 ? '机甲形态' : '行驶形态','',t >= 5 && t < 12.5 ? 'warn' : ''],['击退来袭者',`${t > 8.5 ? 5 : 0}/5`,'',t > 8.5 ? 'ok' : '']]; },
+    read(u){ const t = 14*u; return [['攻击方式','石斧 / 石矛 / 投石',''],['命中次数',String(alienHits),'次'],['车身损伤','0','%','ok'],['当前形态',t >= 5 && t < 12.5 ? '机甲形态' : '行驶形态','',t >= 5 && t < 12.5 ? 'warn' : ''],['击退来袭者',`${KO.filter(k => t > k).length}/5`,'',t > KO[4] ? 'ok' : '']]; },
     chart:{ x:[0,14], y:[0,100], xt:[0,2,4,6,8,10,12,14], yt:[0,25,50,75,100], xl:'时间 s', yl:'外骨骼完好度 %', xOf:u => 14*u, series:[['外骨骼完好度','--ok',() => 100]], lims:[[60,'失效阈值']] } },
   E1: { title:'外观光隧道 · 间隙面差', dur:11, cam:[6,4.5,11], equip:['tunnel'], phase:() => '车辆 3 km/h 通过 LED 光隧道，16 台相机 + 激光测头采集 186 个间隙 / 面差点',
     on(){}, off(){}, frame(u){ rig.x = -7 + 14*u; rig.dyFn = (p,i) => .004*Math.sin(performance.now()/1000*20+i); },
@@ -1676,6 +1755,8 @@ function vizSwitch(){
   if (want) VIZ[want].on();
   st.vizOn = want;
 }
+// ?seek: debug hook for screenshots, jump a validation animation to t seconds and pause
+if (new URLSearchParams(location.search).has('seek')) { window.__vizSeek = t => { st.vt = t; st.vplay = false; }; window.__dbg = { mecha, get model(){ return mechaModel; }, get rig(){ return mechaRig; } }; }
 let vizUiAt = 0;
 function vizUi(force){
   const ro = $('#readout'); const id = st.vizOn;
@@ -1694,7 +1775,7 @@ function vizUi(force){
 /* ================================================================== HUD */
 function renderHud(){
   const g = GATES[st.gate]; const vz = st.vizOn ? VIZ[st.vizOn] : null;
-  const src = hi3dState === 'ok' ? 'Hi3D 原始模型 · 496 万面' : (hi3dState === 'loading' ? `加载 Hi3D 原始模型 ${hi3dPct}%（114 MB）` : '工程简化模型');
+  const lite = assetDir === 'lite/', src = hi3dState === 'ok' ? (lite ? 'Hi3D 模型 · 99 万面（轻量版）' : 'Hi3D 原始模型 · 496 万面') : (hi3dState === 'loading' ? `加载 Hi3D 模型 ${hi3dPct}%（${lite ? '8 MB' : '114 MB'}）` : '工程简化模型');
   const mode = vz ? vz.title : { g0:'概念轮廓（尚未定型）', g1:'整车展示', g3:'爆炸视图', g4:'工位高亮', g5:'数字孪生总装线' }[g.id];
   $('#hud').innerHTML = `<span class="chip on">${g.code} · ${g.name}</span><span class="chip">${mode}</span><span class="chip">${src}</span>${partStatus ? `<span class="chip">${partStatus}</span>` : ''}`;
   const notes = { V1:'粒子颜色越暖表示局部流速越高', V2:'颗粒从车身左侧吹来，遇车身后被抬升绕流', V3:'模组颜色 = 电芯温度（蓝冷 → 红热），橙色高亮为热管理模块', V4:'黄色轨迹为高能粒子；储水夹层出现后部分粒子在舱顶被吸收',
@@ -1765,7 +1846,7 @@ function viewG0(){
     <tr><td>整备质量</td><td class="num">${fmt(totalMass())} kg（火星重量 ≈ ${fmt1(totalMass()*3.71/1000,1)} kN）</td></tr>
     <tr><td>跳跃能力</td><td class="num">单次 ≤ 50 m</td></tr>
   </tbody></table>
-  <h3>马斯克式设计理念：五步工作法</h3>
+  <h3>第一性原理设计理念：五步工作法</h3>
   <ol class="steps">
     <li><div><b>质疑每一条需求</b><span>“必须有车架”？火星车的外骨骼本身就能承载，于是取消车架。</span></div></li>
     <li><div><b>删掉零件和工序</b><span>一体压铸把下车体约 140 个冲焊件减到 2 个；中央计算取代几十个分散 ECU。</span></div></li>
