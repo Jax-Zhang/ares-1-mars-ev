@@ -2,7 +2,7 @@
 const http = require('http'), fs = require('fs'), path = require('path'), { exec } = require('child_process');
 const root = path.resolve(__dirname, '..', 'site'), port = Number(process.argv[2]) || 5173;
 const types = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.css':'text/css', '.json':'application/json',
-  '.png':'image/png', '.jpg':'image/jpeg', '.webp':'image/webp', '.glb':'model/gltf-binary', '.bin':'application/octet-stream', '.txt':'text/plain' };
+  '.png':'image/png', '.jpg':'image/jpeg', '.webp':'image/webp', '.glb':'model/gltf-binary', '.bin':'application/octet-stream', '.txt':'text/plain', '.mjs':'text/javascript', '.wasm':'application/wasm', '.task':'application/octet-stream' };
 http.createServer((req, res) => {
   let p = decodeURIComponent(req.url.split('?')[0]); if (p.endsWith('/')) p += 'index.html';
   const f = path.normalize(path.join(root, p));

@@ -36,6 +36,8 @@ header{border-bottom:1px solid var(--line);background:var(--surface);
 .brand .tag{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.06em}
 .upbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--accent);color:var(--accent);background:var(--raised);border-radius:3px;padding:4px 10px;font-size:13px;cursor:pointer}
 .upbtn:hover{background:var(--accent-soft)}
+.upbtn.xpbtn{background:var(--accent);color:#fff;font-weight:500}
+.upbtn.xpbtn:hover{background:var(--accent);filter:brightness(1.1)}
 nav.gates{display:flex;gap:2px;margin-top:10px;overflow-x:auto;scrollbar-width:none}
 nav.gates::-webkit-scrollbar{display:none}
 .gate{flex:1 0 auto;min-width:104px;background:none;border:0;border-bottom:3px solid transparent;padding:6px 10px 8px;text-align:left;cursor:pointer;color:var(--muted)}
@@ -45,6 +47,23 @@ nav.gates::-webkit-scrollbar{display:none}
 .gate[aria-current="step"]{color:var(--ink);border-bottom-color:var(--accent)}
 .gate[aria-current="step"] .code{color:var(--accent)}
 .gate.done .code::after{content:" ✓";color:var(--ok)}
+.gate.cond .code::after{content:" !";color:var(--warn);font-weight:700}
+.lnk{font-family:var(--f-mono);font-size:11px;line-height:1.5;border:1px solid var(--line);background:var(--raised);border-radius:3px;padding:0 6px;cursor:pointer;color:var(--cyan);white-space:nowrap}
+.lnk:hover{border-color:var(--cyan)}
+table.tbl{width:100%;border-collapse:collapse;font-size:12.5px;min-width:340px}
+.tbl th,.tbl td{padding:6px 8px 6px 0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.tbl th{font-size:12px;color:var(--muted);font-weight:500;white-space:nowrap}
+.tbl td small{display:block;color:var(--muted);font-size:12px}
+.tbl .pill{font-size:11px}
+.vitem.req>button{grid-template-columns:66px minmax(0,1fr) auto}
+.vitem.req .vbody{padding-left:86px}
+.tline{list-style:none;margin:0;padding:0}
+.tline li{display:grid;grid-template-columns:12px 40px 62px minmax(0,1fr);gap:8px;align-items:baseline;font-size:13px;padding:5px 0;position:relative}
+.tline li::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--ok);align-self:center}
+.tline li.run::before{background:var(--warn)}
+.tline li:not(:last-child)::after{content:"";position:absolute;left:4px;top:60%;height:80%;width:1px;background:var(--line)}
+.tline p{margin:0;max-width:none}
+.tline span{color:var(--muted);font-size:12px}
 
 main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);min-height:0}
 .stage{position:relative;min-height:0;border-right:1px solid var(--line);overflow:hidden;
@@ -55,6 +74,9 @@ main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);min-height
 .chip.on{color:var(--accent);border-color:var(--accent)}
 .legend{position:absolute;left:14px;bottom:12px;display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted);pointer-events:none;max-width:calc(100% - 28px)}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.stagebar{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:6px;align-items:center;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:color-mix(in srgb,var(--surface) 86%,transparent);box-shadow:0 6px 18px #0002;max-width:calc(100% - 28px);flex-wrap:wrap;justify-content:center}
+.stagebar span{font-size:12px;color:var(--muted);margin:0 2px 0 4px}
+.stagebar i{width:1px;height:18px;background:var(--line);margin:0 4px}
 .tip{position:absolute;pointer-events:none;background:var(--raised);border:1px solid var(--line);padding:6px 9px;font-size:12px;border-radius:4px;box-shadow:0 4px 14px #0002;max-width:240px}
 .tip b{display:block;font-size:13px}
 .note3d{position:absolute;right:14px;bottom:12px;font-size:11px;color:var(--muted);max-width:46%;text-align:right;pointer-events:none}
@@ -69,9 +91,11 @@ main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);min-height
 .readout .row b small{font-size:11px;color:var(--muted);font-weight:400;margin-left:3px}
 .labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .lbl{position:absolute;transform:translate(-50%,-100%);pointer-events:auto;cursor:pointer;white-space:nowrap;font-size:11px;line-height:1.3;
-  background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:2px;padding:2px 6px;color:var(--ink);transition:opacity .2s}
+  background:color-mix(in srgb,var(--surface) 46%,transparent);border:1px solid color-mix(in srgb,var(--line) 45%,transparent);border-left:2px solid var(--accent);border-radius:2px;padding:2px 6px;color:var(--ink);transition:opacity .2s,background .15s;
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);text-shadow:0 0 3px var(--surface),0 0 3px var(--surface)}
+.lbl:hover{background:color-mix(in srgb,var(--surface) 92%,transparent);border-color:var(--line);z-index:2}
 .lbl small{display:block;font-family:var(--f-mono);font-size:9.5px;color:var(--muted)}
-.lbl.sel{border-color:var(--accent);background:var(--accent-soft)}
+.lbl.sel{border-color:var(--accent);background:color-mix(in srgb,var(--surface) 80%,var(--accent) 20%);z-index:1}
 
 .panel{min-height:0;overflow-y:auto;background:var(--surface);
   padding-block:18px 28px;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
@@ -136,10 +160,12 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .btn[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .plist{display:grid;gap:2px}
-.plist button{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:8px;align-items:center;background:none;border:0;border-radius:3px;padding:5px 6px;text-align:left;cursor:pointer;font-size:13px}
+.plist button{display:grid;grid-template-columns:12px minmax(0,1fr) auto auto;gap:8px;align-items:center;background:none;border:0;border-radius:3px;padding:5px 6px;text-align:left;cursor:pointer;font-size:13px}
 .plist button:hover,.plist button[aria-pressed="true"]{background:var(--accent-soft)}
 .plist i{width:10px;height:10px;border-radius:2px}
-.plist .m{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.plist .m{font-family:var(--f-mono);font-size:12px;color:var(--muted);min-width:56px;text-align:right}
+.plist small{display:block;font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+.lnk[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
 .pcard{border:1px solid var(--accent);border-radius:4px;padding:12px;background:var(--raised)}
 .pcard h4{margin:0 0 4px;font-size:16px}
 .pcard .meta{font-size:12px;color:var(--muted)}
@@ -240,7 +266,7 @@ svg text{font-family:var(--f-body)}
     <div class="brand">
       <h1 id="brandName">ARES<b>-1</b></h1>
       <p id="brandSub">火星装甲电动车 · 整车研发与制造全流程平台</p>
-      <div class="right"><button class="upbtn" id="openUpload" type="button">＋ 更换车型 / 上传模型</button><span class="tag">MARS ARMORED EV · DEV PROGRAM</span></div>
+      <div class="right"><button class="upbtn xpbtn" id="openXp" type="button">▶ 体验模式 · 摄像头驾驶</button><button class="upbtn" id="openUpload" type="button">＋ 更换车型 / 上传模型</button><span class="tag">MARS ARMORED EV · DEV PROGRAM</span></div>
     </div>
     <nav class="gates" id="gates" aria-label="开发阶段"></nav>
   </header>
@@ -252,6 +278,7 @@ svg text{font-family:var(--f-body)}
       <div class="readout" id="readout" hidden></div>
       <div class="flow" id="flow" hidden></div>
       <div class="legend" id="legend"></div>
+      <div class="stagebar" id="stagebar" hidden></div>
       <div class="tip" id="tip" hidden></div>
     </section>
     <section class="panel" id="panel" aria-live="polite"></section>
@@ -295,6 +322,7 @@ const GATES = [
   { id:'g4', code:'G4', name:'工装与产线', ph:'制造' },
   { id:'g5', code:'G5', name:'试生产与爬坡', ph:'制造' },
   { id:'g6', code:'G6', name:'SOP 与下线', ph:'交付' },
+  { id:'tr', code:'主线', name:'变更贯通', ph:'追溯' },
 ];
 const SYS = {
   '车身':      { color:0xa9b1b9, css:'#a9b1b9' },
@@ -384,9 +412,9 @@ const VAL = [
     res:'全频段状态 A，CAN 错误帧 0；LET 37 MeV·cm²/mg 下翻转 1,284 次全部纠正，无锁定。',
     note:'中央计算单元做抗辐射加固：ECC 内存 + 三模冗余看门狗 + 锁定电流保护。' },
 ];
-VAL.push({ id:'V10', name:'彩蛋：外星生物突袭', cat:'装甲防护', st:'ok', label:'毫发无损',
+const EGG = ({ id:'V10', name:'彩蛋：外星生物突袭', cat:'装甲防护', st:'ok', label:'毫发无损',
   method:'5 名火星原住民（大头绿皮，手持石斧、石矛、投石）围攻车辆，持续投掷与劈砍。', crit:'外骨骼无穿透、无凹陷；乘员舱压力不变。',
-  res:'承受 30+ 次石器打击，车身损伤 0%；车辆切换机甲形态，冲击波将来袭者全部击退。', note:'3 mm 超硬不锈钢外骨骼 + 陶瓷装甲的“实战检验”（纯属娱乐演示）。' });
+  res:'承受 30+ 次石器打击，车身损伤 0%；车辆切换机甲形态，五连击逐个击退来袭者。', note:'3 mm 超硬不锈钢外骨骼 + 陶瓷装甲的“实战检验”（纯属娱乐演示）。' });
 const EOL = [
   { id:'E1', name:'外观与间隙面差', cat:'外观', st:'ok', label:'通过',
     method:'LED 光隧道 + 16 台工业相机，车辆 3 km/h 通过；激光测量 186 个间隙 / 面差点。', crit:'间隙 3.0 ± 0.5 mm；面差 ≤ 0.8 mm；A 类表面缺陷 0。',
@@ -412,6 +440,126 @@ const EOL = [
     method:'推进剂管路充氦 3 MPa，氦质谱检漏 + 阀门开关响应测试（不点火，只排冷气）。', crit:'氦漏率 ≤ 1×10⁻⁶ mbar·L/s；阀门响应 ≤ 25 ms。',
     res:'最大 3.2×10⁻⁷ mbar·L/s；阀门响应 18 ms；4/4 通过。', note:'冷试只排出少量氦气，不涉及燃烧。' },
 ];
+
+/* ============================================================ program data */
+// Traceability backbone: requirements -> verification (VAL / EOL ids) -> engineering changes -> parts and stations.
+// `by` lists the tests that prove a requirement; `check` proves it from live data (BOM mass, line plan) instead.
+const REQS = [
+  { id:'R-ENV-01', cat:'环境适应', name:'低重力松软地面通过性', target:'0.38 g 下垂直越障 ≥ 0.5 m，坡道 ≥ 30°，离地间隙 ≥ 0.6 m', now:'越障 0.62 m，坡道 35°，离地间隙 0.65 m', src:'火星环境：重力 3.71 m/s²，风化层地面', sys:'底盘', by:['V6'] },
+  { id:'R-ENV-02', cat:'环境适应', name:'极寒停放', target:'夜间 −80 °C 停放 12 h，电芯 ≥ 10 °C，温差 ≤ 5 °C', now:'最低 12.4 °C，温差 4.1 °C', src:'火星环境：夜间常见 −80 °C', sys:'热管理', by:['V3'] },
+  { id:'R-ENV-03', cat:'环境适应', name:'沙尘冲蚀与侧风稳定', target:'迎风面 1,000 h 磨损 ≤ 0.2 mm，30 m/s 阵风侧翻稳定系数 ≥ 1.3', now:'加速复验 0.12 mm，稳定系数 2.4', src:'火星环境：全球性沙尘暴可持续数周', sys:'车身', by:['V2'], ecn:'ECN-002', open:'ISS-002' },
+  { id:'R-ENV-04', cat:'环境适应', name:'防尘与座舱气密', target:'电驱 / 电控 IP6X，座舱 70 kPa 泄漏率 ≤ 0.1%/h', kt:'泄漏率 ≤ 0.1%/h', now:'0.06%/h', src:'任务定义：2 人加压座舱；细颗粒风化层', sys:'座舱', by:['V7','E3','E6'], key:true },
+  { id:'R-SAF-01', cat:'安全', name:'乘员辐射剂量', target:'乘员年剂量 ≤ 150 mSv', kt:'≤ 150 mSv/年', now:'140 mSv/年', src:'火星环境：地表约 0.2–0.25 Sv/年', sys:'座舱', by:['V4'], ecn:'ECN-003', key:true },
+  { id:'R-SAF-02', cat:'安全', name:'跳跃着陆结构安全', target:'4 g 着陆冲击下屈服安全系数 ≥ 1.5，电池包变形 ≤ 3 mm', now:'安全系数 1.62，变形 1.8 mm', src:'任务定义：跳跃越过裂谷后着陆', sys:'车身', by:['V5'] },
+  { id:'R-SAF-03', cat:'安全', name:'高压电安全', target:'绝缘电阻 ≥ 500 MΩ，2,700 V 耐压无击穿，涉水后绝缘不下降', now:'1,850 MΩ，无击穿；涉水最低 1,620 MΩ', src:'800 V 高压平台通用安全要求', sys:'三电·电控', by:['E7','E4'] },
+  { id:'R-PRF-01', cat:'性能', name:'动力性', target:'极速 60 km/h，0–60 km/h ≤ 11 s', kt:'0–60 km/h ≤ 11 s', now:'9.8 s', src:'任务定义：基地间转场', sys:'三电·电机', by:['E2'], key:true },
+  { id:'R-PRF-02', cat:'性能', name:'续航里程', target:'松软地面续航 ≥ 500 km', kt:'≥ 500 km', now:'能耗仿真 512 km，实车路试未完成', src:'任务定义：单次出勤往返 2 个基地', sys:'三电·电池', by:[], open:'ISS-001', key:true },
+  { id:'R-PRF-03', cat:'性能', name:'快速补能', target:'峰值功率 ≥ 300 kW，20→80% ≤ 25 min，电芯 ≤ 45 °C', kt:'20→80% ≤ 25 min', now:'21 min（峰值 352 kW）', src:'任务定义：基地兆瓦级充电站', sys:'三电·电池', by:['E5'], key:true },
+  { id:'R-PRF-04', cat:'性能', name:'跳跃机动', target:'满载推重比 ≥ 1.2，单次跳跃 ≤ 50 m', kt:'推重比 ≥ 1.2', now:'推重比 1.31（4 × 3.9 kN）', src:'任务定义：短距离越过裂谷', sys:'推进', by:['V8','E8'], ecn:'ECN-001', key:true },
+  { id:'R-PRF-05', cat:'性能', name:'气动阻力占比', target:'60 km/h 气动阻力占行驶阻力 < 5%', now:'0.5%（5.9 N / 1,190 N）', src:'火星环境：大气密度为地球的 1.6%', sys:'车身', by:['V1'] },
+  { id:'R-REL-01', cat:'可靠性', name:'电磁抗扰与抗辐射', target:'200 V/m 全频段功能状态 A，单粒子翻转 100% 纠正、无锁定', now:'状态 A；翻转 1,284 次全部纠正', src:'火星环境：无磁场屏蔽，高能粒子直达地表', sys:'三电·电控', by:['V9'] },
+  { id:'R-VEH-01', cat:'整车', name:'整备质量', target:'整备质量 ≤ 3,250 kg', kt:'≤ 3,250 kg', now:() => fmt(totalMass()) + ' kg（余量 ' + (3250 - totalMass()) + ' kg）', src:'着陆器单次运载能力与跳跃推重比反推', sys:'整车', by:[], check:() => totalMass() <= 3250, proof:['gate:g3','工程 BOM 质量汇总'], key:true },
+  { id:'R-MFG-01', cat:'制造与质量', name:'产能与节拍', target:'年产 20,000 台，各工位周期 ≤ 节拍 675 s', kt:'工位周期 ≤ 675 s', now:() => '瓶颈工位 ' + Math.max(...STATIONS.map(s => s.ct)) + ' s', src:'商业目标：年产 20,000 台，250 天 × 2 班', sys:'制造', by:[], check:() => Math.max(...STATIONS.map(s => s.ct)) <= TAKT, proof:['gate:g4','产线节拍平衡'], key:true },
+  { id:'R-MFG-02', cat:'制造与质量', name:'下线外观质量', target:'间隙 3.0 ± 0.5 mm，面差 ≤ 0.8 mm，A 类表面缺陷 0', now:'间隙 2.6–3.4 mm，面差 0.6 mm，缺陷 0', src:'质量目标：无涂装不锈钢外观', sys:'车身', by:['E1'] },
+];
+// DVP&R attributes of each design-validation item: [type, sample, phase]
+const DVP = {
+  V1:['CAE 仿真','数字样车（3D 数据 A 版）','DV'], V2:['CAE 仿真','数字样车（3D 数据 A 版）','DV'], V3:['CAE 仿真','数字样车（3D 数据 A 版）','DV'],
+  V4:['蒙特卡洛仿真','座舱人体模型','DV'], V5:['CAE 仿真','数字样车（3D 数据 B 版）','DV'], V6:['多体动力学仿真','数字样车（3D 数据 B 版）','DV'],
+  V7:['台架试验','电驱、电控、座舱各 3 件','PV'], V8:['工程核算','—','DV'], V9:['台架试验','中央计算单元 3 件 + 工程样车 1 台','PV'] };
+// engineering changes: what triggered them and everything they touch
+const ECNS = [
+  { id:'ECN-001', title:'跳跃推进由涵道风扇改为 CH4/LOX 推进器', from:'V8', reqs:['R-PRF-04'], mass:-28,
+    why:'火星大气密度只有地球的 1.6%，概念方案的涵道风扇推力约 0.4 kN，整车火星重量约 11.9 kN，推重比 0.03。',
+    what:'改用 4 台 3.9 kN 的 CH4/LOX 小型推进器，推进剂可由火星就地制取；后压铸件增加储罐支架，中央计算单元增加推进控制域。',
+    parts:['thr0','thr1','thr2','thr3','castR','vcu'],
+    tests:[['V8','推重比复算 1.31，满足 ≥ 1.2'],['V5','按新质量分布复算着陆冲击，安全系数 1.62'],['E8','新增下线检测：推进系统冷试']],
+    stations:[['ST70','推进模块改为机器人安装，新增推进剂管路与氦检口'],['ST90','新增推进剂管路氦检漏']],
+    steps:[['发现','第 31 周','V8 推重比 0.03，方案不可行'],['评审','第 32 周','影响 6 个零件、2 个工位，批准变更'],['发布','第 33 周','3D 数据、BOM、工艺卡换版'],['复验','第 36 周','V8 / V5 通过，E8 纳入下线检测'],['关闭','第 37 周','变更关闭']] },
+  { id:'ECN-002', title:'前脸与轮拱棱边增加 0.5 mm 陶瓷喷涂层', from:'V2', reqs:['R-ENV-03'], mass:4, open:'ISS-002',
+    why:'沙尘冲蚀仿真显示前脸棱边 1,000 h 磨损 0.31 mm，超过 0.2 mm 的限值。',
+    what:'外骨骼车身前脸与轮拱棱边增加 0.5 mm 陶瓷喷涂层，喷涂在外骨骼车身旁线完成。',
+    parts:['body'],
+    tests:[['V2','加速复验磨损 0.12 mm，满足 ≤ 0.2 mm'],['E1','光隧道检测增加涂层边界检查']],
+    stations:[['ST60','外骨骼车身来料增加涂层厚度抽检']],
+    steps:[['发现','第 29 周','V2 前脸棱边磨损 0.31 mm 超标'],['评审','第 30 周','影响 1 个零件、1 个工位，批准变更'],['发布','第 31 周','喷涂工艺规范发布'],['复验','第 35 周','加速复验 0.12 mm 通过'],['跟踪','进行中','1,000 h 实物耐久台架已完成 600 h']] },
+  { id:'ECN-003', title:'座舱顶部增加 6 cm 储水夹层', from:'V4', reqs:['R-SAF-01'], mass:38,
+    why:'初版辐射剂量估算为 210 mSv/年，超过 150 mSv/年的任务设计值。',
+    what:'座舱顶部增加 6 cm 储水夹层，兼作生命保障水箱；夹层接入热管理回路防止夜间结冰。',
+    parts:['cabin','thermal'],
+    tests:[['V4','复算 140 mSv/年，满足 ≤ 150'],['V3','储水夹层纳入保温回路，夜间不结冰'],['V5','顶部增重后着陆冲击复算通过']],
+    stations:[['ST60','座舱吊装工装按新重心调整'],['ST90','新增储水夹层加注']],
+    steps:[['发现','第 30 周','V4 乘员年剂量 210 mSv 超标'],['评审','第 31 周','影响 2 个零件、2 个工位，批准变更'],['发布','第 32 周','座舱 3D 数据与 BOM 换版'],['复验','第 35 周','V4 / V3 / V5 通过'],['关闭','第 36 周','变更关闭']] },
+];
+// gate reviews (keyed by the internal view id) and the open / closed issue list
+const REVIEW = {
+  g0:{ st:'ok', res:'通过', wk:'第 4 周' }, g1:{ st:'ok', res:'通过', wk:'第 12 周' }, g3:{ st:'ok', res:'通过', wk:'第 26 周' },
+  g2:{ st:'ok', res:'通过', wk:'第 38 周', note:'3 项设计变更已发布' }, g4:{ st:'ok', res:'通过', wk:'第 46 周' }, g5:{ st:'ok', res:'通过', wk:'第 58 周' },
+  g6:{ st:'warn', res:'有条件放行', wk:'第 64 周', note:'2 项遗留问题限期关闭' } };
+const ISSUES = [
+  { id:'ISS-001', title:'实车续航 500 km 路试未完成', note:'目前只有能耗仿真（512 km），试生产车路试进行中', src:'R-PRF-02', owner:'三电·电池', st:'open', due:'SOP 后 4 周' },
+  { id:'ISS-002', title:'陶瓷涂层 1,000 h 耐久台架未跑完', note:'已完成 600 h，磨损 0.07 mm，趋势满足 ≤ 0.2 mm', src:'ECN-002', owner:'车身', st:'open', due:'SOP 后 6 周' },
+  { id:'ISS-003', title:'跳跃推进推重比不足', note:'ECN-001 关闭', src:'V8', owner:'推进', st:'closed', due:'第 37 周' },
+  { id:'ISS-004', title:'乘员年剂量超标', note:'ECN-003 关闭', src:'V4', owner:'座舱', st:'closed', due:'第 36 周' },
+];
+
+/* ------------------------------------------------ engineering BOM, DFMEA, control plan, ramp-up, vehicle records */
+const bomKey = id => id.replace(/\d+[LR]?$/, '');
+// per part family: [part number, make / buy, source, unit cost in 万元]
+const BOMX = {
+  body:['A1-BIW-1000','自制','外骨骼车身旁线 SA-E',6.8], castF:['A1-BIW-2100','自制','一体压铸车间',1.9], castR:['A1-BIW-2200','自制','一体压铸车间',1.7],
+  battery:['A1-ESS-3000','自制','电池包预装线 SA-B（电芯外购）',26.0], bms:['A1-ESS-3100','外购','电控供应商 S-04',0.6],
+  du:['A1-EDU-4000','外购','电驱供应商 S-02（旁线 SA-D 预装）',3.2], susp:['A1-CHS-5100','外购','底盘模块供应商 S-06',1.4], wheel:['A1-CHS-5200','外购','车轮供应商 S-07',2.1],
+  vcu:['A1-EEA-6000','外购','计算平台供应商 S-03',4.5], pdu:['A1-EEA-6100','外购','电控供应商 S-04',0.9], harness:['A1-EEA-6200','外购','线束供应商 S-05',0.8],
+  thermal:['A1-THM-7000','外购','热管理供应商 S-08',2.6], cabin:['A1-CAB-8000','自制','座舱分装线',18.5], thr:['A1-PRP-9000','外购','推进系统供应商 S-01',6.0], roof:['A1-PRP-9100','外购','能源与通信供应商 S-09',3.8] };
+const OTHER_COST = 5.0, COST_TARGET = 130, MASS_TARGET = 3250;
+const bomOf = p => BOMX[bomKey(p.id)];
+const pnOf = p => bomOf(p)[0] + (p.id.startsWith('du') ? '-' + 'FMR'[+p.id[2]] : '');
+const totalCost = () => Math.round((parts.reduce((a, p) => a + bomOf(p)[3], 0) + OTHER_COST)*10)/10;
+const costBySys = () => { const m = {}; parts.forEach(p => m[p.sys] = (m[p.sys] || 0) + bomOf(p)[3]); return m; };
+// design FMEA, highest risks: [part id, failure mode, effect, S, O, D, action, proof refs]
+const DFMEA = [
+  ['battery','着陆冲击下电芯壳体变形、内短路','热失控，危及乘员',10,3,3,'底部六角装甲护板，模组间缓冲结构',['val:V5']],
+  ['vcu','高能粒子引起单粒子锁定','整车控制失效',10,3,4,'ECC 内存、三模冗余看门狗、锁定电流保护',['val:V9']],
+  ['cabin','车门密封被沙尘磨损后泄压','座舱失压',9,4,3,'双道密封加正压吹扫，每台下线做气密检测',['val:V7','eol:E6']],
+  ['thr0','推进剂管路接头泄漏','起跳失败或起火',9,3,3,'管路氦质谱检漏，阀门响应测试',['eol:E8','stn:ST90']],
+  ['thermal','极寒下保温不足，电芯低于 10 °C','续航下降，无法充电',7,4,3,'气凝胶保温层，热泵废热回收',['val:V3']],
+  ['body','前脸棱边被沙尘冲蚀减薄','装甲防护下降',6,6,4,'棱边 0.5 mm 陶瓷喷涂层',['val:V2','ecn:ECN-002']],
+];
+// control plan, key process characteristics: [station, characteristic, spec, control method, class]
+const CONTROL = [
+  ['ST10','流钻螺钉 FDS 连接 ×48','下沉量 0–0.3 mm，扭矩曲线在包络内','设备 100% 曲线监控，超差停线','关键'],
+  ['ST20','电池包 32 点拧紧','110 N·m ± 5%，转角 30–60°','扭矩-转角 100% 监控，数据绑定车架号','安全'],
+  ['ST20','高压插件二次锁止','锁止到位，卡扣无回弹','到位传感器加人工点检，100%','安全'],
+  ['ST60','车身连接点拧紧 ×24','85 N·m ± 5%','机器人拧紧 100% 监控','关键'],
+  ['ST70','推进剂管路密封','氦漏率 ≤ 1×10⁻⁶ mbar·L/s','氦质谱检漏 100%，ST90 复检','安全'],
+  ['ST80','轮毂螺栓拧紧','450 N·m ± 4%','扭矩-转角 100% 监控','安全'],
+  ['ST80','六轮定位','前束偏差 ≤ 0.1°','定位台 100% 测量','关键'],
+  ['ST90','软件版本与首次上电','版本与 BOM 一致，无故障码','刷写后自动校验，100%','关键'],
+];
+// trial-production ramp, 12 weeks: weekly output plan / actual (vehicles) and first-time-through rate (%)
+const RAMP = { plan:[10,20,40,70,110,160,220,280,340,380,400,400], act:[8,18,36,66,104,152,214,271,333,376,398,401], ftt:[62,68,74,79,83.5,86.5,89,91,92.6,94.1,95.4,96.2], target:95,
+  pareto:[['高压插件未到位',23],['座舱密封条装配',18],['间隙面差超差',15],['拧紧曲线异常',12],['软件刷写超时',9],['其他',23]] };
+REQS.push(
+  { id:'R-VEH-02', cat:'整车', name:'单车物料成本', target:'单车物料成本 ≤ 130 万元', kt:'≤ 130 万元', now:() => totalCost().toFixed(1) + ' 万元（余量 ' + (COST_TARGET - totalCost()).toFixed(1) + ' 万元）', src:'商业目标：基地批量采购价', sys:'整车', by:[], check:() => totalCost() <= COST_TARGET, proof:['gate:g3','工程 BOM 成本汇总'], key:true },
+  { id:'R-MFG-03', cat:'制造与质量', name:'一次合格率', target:'爬坡结束时一次合格率（FTT）≥ 95%', kt:'FTT ≥ 95%', now:() => RAMP.ftt[RAMP.ftt.length - 1] + '%（试生产第 ' + RAMP.ftt.length + ' 周）', src:'质量目标：下线不返修直接交付', sys:'制造', by:[], check:() => RAMP.ftt[RAMP.ftt.length - 1] >= RAMP.target, proof:['gate:g5','试生产爬坡记录'], key:true });
+// end-of-line record of one vehicle: measured values, rework, serial numbers of key parts (deterministic per sequence number)
+const h01 = (a, b) => { const s = Math.sin(a*12.9898 + b*78.233)*43758.5453; return s - Math.floor(s); };
+const VEH_NOS = [42, 41, 40, 39, 38];
+function vehRec(n){
+  const j = k => h01(n, k), no = String(n).padStart(5, '0');
+  const rework = n === 40 ? ['E3','淋雨检出后门下沿 1 处渗漏，更换密封条后复检通过'] : (n === 38 ? ['E1','左前装甲板面差 0.9 mm，调整后复检 0.5 mm'] : null);
+  const vals = { E1:`间隙 ${(2.6 + .1*j(1)).toFixed(1)}–${(3.3 + .15*j(2)).toFixed(1)} mm`, E2:`0–60 km/h ${(9.6 + .5*j(3)).toFixed(1)} s`, E3:'36 个检测点无渗漏', E4:`绝缘电阻 ${fmt(Math.round(1550 + 200*j(4)))} MΩ`,
+    E5:`20→80% ${Math.round(20 + 2*j(5))} min`, E6:`泄漏率 ${(.05 + .03*j(6)).toFixed(2)}%/h`, E7:`绝缘电阻 ${fmt(Math.round(1750 + 250*j(7)))} MΩ`, E8:`氦漏率 ${(2.5 + 1.5*j(8)).toFixed(1)}×10⁻⁷ mbar·L/s` };
+  const trace = [
+    ['battery','结构电池包',`BP-2611-${no}`,'ST20',`32 点拧紧全部合格，最大偏差 +${(1 + 2*j(9)).toFixed(1)}%`],
+    ['du0','电驱单元 ×3',`DU-26W44-${no}-F / M / R`,'ST30','旁线台架测试合格'],
+    ['vcu','中央计算单元',`CCU-${no}`,'ST50','软件 OTA v1.0.3，校验通过'],
+    ['thr0','跳跃推进模块 ×4',`批次 TH-L2611-${String(7 + (n % 3)).padStart(2, '0')}`,'ST70','CH4/LOX 推进器（ECN-001 已实施）'],
+    ['body','外骨骼车身',`BIW-${no}`,'ST60',`陶瓷涂层 ${(.5 + .05*j(10)).toFixed(2)} mm（ECN-002 已实施）`],
+    ['cabin','加压座舱',`CAB-${no}`,'ST60','储水夹层已加注（ECN-003 已实施）'] ];
+  return { n, no, shift:n % 2 ? '夜班' : '白班', rework, vals, trace };
+}
 
 /* ================================================================ helpers */
 const $ = s => document.querySelector(s);
@@ -443,7 +591,7 @@ controls.enableDamping = true;
 controls.maxPolarAngle = Math.PI * 0.495;
 controls.minDistance = 3; controls.maxDistance = 60;
 controls.autoRotateSpeed = 0.6;
-scene.add(new THREE.HemisphereLight(0xffffff, 0x8a6a50, 0.9));
+const hemi = new THREE.HemisphereLight(0xffffff, 0x8a6a50, 0.9); scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xfff1e0, 1.6); sun.position.set(6, 10, 4); scene.add(sun);
 
 const shadowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
@@ -777,6 +925,13 @@ function splitWheels(mesh, det){
 function setupHi3d(gltf, opts = {}){
   const root = gltf.scene; let mesh = null; root.traverse(o => { if (o.isMesh && !mesh) mesh = o; });
   let det = null, hiW = [];
+  // Lite models store positions as quantized interleaved integers with a scale on the mesh node. Wheel detection and
+  // splitting read raw float coordinates in the parent's space, so bake the node transform into a Float32 attribute first.
+  { const g = mesh.geometry, pa = g.attributes.position; mesh.updateMatrix();
+    if (pa.isInterleavedBufferAttribute || !(pa.array instanceof Float32Array) || !mesh.matrix.equals(new THREE.Matrix4())) {
+      const a = new Float32Array(pa.count*3), v = new THREE.Vector3();
+      for (let i=0;i<pa.count;i++){ v.fromBufferAttribute(pa, i).applyMatrix4(mesh.matrix); a[i*3] = v.x; a[i*3+1] = v.y; a[i*3+2] = v.z; }
+      g.setAttribute('position', new THREE.BufferAttribute(a, 3)); mesh.position.set(0,0,0); mesh.quaternion.identity(); mesh.scale.set(1,1,1); g.computeBoundingBox(); g.computeBoundingSphere(); } }
   try { mesh.updateMatrix(); det = detectWheels(mesh.geometry); mesh.userData.det = det; if (det.wheels.length >= 4) hiW = splitWheels(mesh, det); } catch (e) { console.warn('wheel split skipped', e); }
   const yaw = (det && det.L === 0 ? 0 : Math.PI/2) + (opts.flip ? Math.PI : 0);
   root.rotation.y = yaw; root.updateMatrixWorld(true);
@@ -788,6 +943,12 @@ function setupHi3d(gltf, opts = {}){
   mesh.material.transparent = false; mesh.userData.partId = 'body';
   const bm = mesh.material; bm.userData.base = { opacity:1, emissive:(bm.emissive ? bm.emissive.clone() : null), ei:bm.emissiveIntensity ?? 1 };
   bodyPart.mats = [bm];
+  // lamps on: strongly coloured texels of the shell (LED strips, pod rings, markers) emit light; steel and rubber do not
+  bm.onBeforeCompile = sh => { sh.uniforms.uGlow = GLOW; sh.uniforms.uGlowT = GLOW_T;
+    sh.vertexShader = 'varying vec3 vGlowP;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\nvGlowP = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    sh.fragmentShader = 'uniform float uGlow; uniform float uGlowT; varying vec3 vGlowP;\n' + sh.fragmentShader.replace('#include <emissivemap_fragment>',
+      '#include <emissivemap_fragment>\n{ vec3 gc = diffuseColor.rgb; float gmx = max(max(gc.r, gc.g), gc.b), gmn = min(min(gc.r, gc.g), gc.b); float lit = smoothstep(.28, .5, gmx - gmn) * smoothstep(.3, .55, gmx);' +
+      ' float run = .5 + .5 * sin(vGlowP.x * 3.2 + uGlowT * 5.0); float pulse = .75 + .25 * sin(uGlowT * 2.2); totalEmissiveRadiance += gc * lit * uGlow * (2.4 * pulse + 6.0 * pow(run, 6.0)); }'); };
   // place at rest to measure, then hand each Hi3D wheel to the matching wheel part
   bodyPart.obj.position.copy(bodyPart.home); bodyPart.obj.rotation.set(0,0,0); bodyPart.obj.add(wrap);
   const saveRig = dmu.matrix.clone(); dmu.position.set(0,0,0); dmu.rotation.set(0,0,0); dmu.updateMatrixWorld(true);
@@ -804,13 +965,17 @@ function setupHi3d(gltf, opts = {}){
     best.mats = [m]; best.hiPivot = w.pivot; best.rw = w.R*k;
   });
   hiWheelsOn = used.size >= 4;
-  hi3d = wrap; hi3dState = 'ok'; applyGate(true);
+  if (!opts.custom) { try { splitPanels(mesh); } catch (e) { console.warn('panel split skipped', e); } }
+  hi3d = wrap; try { placeG1(); } catch (e) { console.warn('g1 models skipped', e); }
+  hi3d = wrap; hi3dState = 'ok'; applyGate(gid() !== 'g1');   // G1 shows the panel buttons, which depend on the split
 }
 function clearHi3d(){
+  clearPanels();
   if (hi3d) { hi3d.parent.remove(hi3d); hi3d = null; }
   parts.filter(p => p.isWheel).forEach(p => { if (p.hiPivot) { p.hiPivot.parent.remove(p.hiPivot); p.hiPivot = null; }
     p.spin.children.forEach(o => o.visible = true); p.home.copy(p.home0); p.mats = []; p.spin.traverse(o => { if (o.material && !p.mats.includes(o.material)) p.mats.push(o.material); }); });
   procBody.forEach(o => o.visible = true); bodyPart.mats = procBody.map(o => o.material); hiWheelsOn = false;
+  placeG1();
 }
 const loadGlb = (buf, opts) => new Promise((ok, bad) => new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).parse(buf, '', g => { setupHi3d(g, opts); ok(); }, bad));
 fetchHi3d().then(buf => loadGlb(buf)).catch(() => { hi3dState = 'missing'; applyGate(true); }).finally(() => loadPartModels());
@@ -876,7 +1041,7 @@ async function loadPartModels(){
   }
   partStatus = ''; renderHud();
   await loadSceneModels();
-  loadLineModels();
+  loadLineModels(); loadG1Models();
 }
 // Hi3D production-line models (G5): carrier skid, supply AGVs, line-side racks, workers. Repeated many times, so kept light.
 const LINE_TRIS = { carrier:80000, agv:30000, rack:40000, worker:30000, gantry:60000, lift:50000, filler:50000, tunnel:80000 },
@@ -1696,9 +1861,230 @@ function updateLine(dt){
   return ls;
 }
 
+/* ================================================= G1: openable panels, environment scenes, lamps */
+// Panels are cut out of the single Hi3D body shell, the same way the wheels are, then hung on a hinge.
+// box = [x0,x1, y0,y1, z0,z1] in vehicle coordinates (x forward, y up, +z left); n = direction the skin must face;
+// t = how closely (cosine); hinge point + axis; open = hinge angle in radians.
+const DOOR_POLY = [[-.65,1.787],[.33,1.787],[.72,1.34],[.75,1.09],[-.22,1.08],[-.66,1.33]];   // [x, y] corners of the door seam, measured on the model
+const inPoly = (poly, x, y) => { let c = false; for (let i=0, j=poly.length-1; i<poly.length; j=i++) { const [xi, yi] = poly[i], [xj, yj] = poly[j]; if ((yi > y) !== (yj > y) && x < (xj - xi)*(y - yi)/(yj - yi) + xi) c = !c; } return c; };
+const PANELS = [
+  // doors follow the door seam of the model: a six-sided outline in the side view; the hinge is found on the door's own top edge
+  { id:'doorL', name:'左舱门', box:[-.7,.8, 1.05,1.82, .7,1.5], poly:DOOR_POLY, n:[0,0,1], t:.15, hinge:'top', axis:'x', open:-1.35 },
+  { id:'doorR', name:'右舱门', box:[-.7,.8, 1.05,1.82, -1.5,-.7], poly:DOOR_POLY, n:[0,0,-1], t:.15, hinge:'top', axis:'x', open:1.35 },
+  { id:'hood', name:'前舱盖', box:[1.44,2.95, 1.15,2.3, -.74,.74], n:[.38,.925,0], t:.8, hinge:[1.44,1.8,0], axis:'z', open:.72 },
+  { id:'deck', name:'后舱盖', box:[-2.96,-2.06, 1.6,2.3, -.84,.84], n:[-.336,.942,0], t:.82, hinge:[-2.06,2.07,0], axis:'z', open:-.85 },
+];
+let panelObjs = {};
+function clearPanels(){ Object.values(panelObjs).forEach(o => { if (o.pivot.parent) o.pivot.parent.remove(o.pivot); }); panelObjs = {}; }
+function splitPanels(mesh){
+  clearPanels();
+  const g = mesh.geometry, idx = g.index.array, pos = g.attributes.position, nv = pos.count, nt = idx.length/3;
+  bodyPart.obj.updateMatrixWorld(true); mesh.updateMatrixWorld(true);
+  const M = new THREE.Matrix4().copy(bodyPart.obj.matrixWorld).invert().multiply(mesh.matrixWorld);   // mesh space -> vehicle space at rest
+  const V = new Float32Array(nv*3), v = new THREE.Vector3();
+  for (let i=0;i<nv;i++){ v.fromBufferAttribute(pos, i).applyMatrix4(M); V[i*3] = v.x; V[i*3+1] = v.y; V[i*3+2] = v.z; }
+  const P = PANELS.map(p => ({ b:p.box, poly:p.poly, n:new THREE.Vector3(...p.n).normalize(), t:p.t })), K = P.length;
+  const tag = new Int8Array(nt).fill(K), cnt = new Uint32Array(K + 1);
+  for (let t=0;t<nt;t++){ const a = idx[t*3]*3, b = idx[t*3+1]*3, c = idx[t*3+2]*3;
+    const cy = (V[a+1] + V[b+1] + V[c+1])/3; if (cy < 1.04) { cnt[K]++; continue; }
+    const cx = (V[a] + V[b] + V[c])/3, cz = (V[a+2] + V[b+2] + V[c+2])/3;
+    const ux = V[b]-V[a], uy = V[b+1]-V[a+1], uz = V[b+2]-V[a+2], wx = V[c]-V[a], wy = V[c+1]-V[a+1], wz = V[c+2]-V[a+2];
+    const nx = uy*wz - uz*wy, ny = uz*wx - ux*wz, nz = ux*wy - uy*wx, nl = Math.hypot(nx, ny, nz) || 1;
+    let k = K; for (let i=0;i<K;i++){ const { b:bx, n, t:th, poly } = P[i];
+      if (cx > bx[0] && cx < bx[1] && cy > bx[2] && cy < bx[3] && cz > bx[4] && cz < bx[5] && (nx*n.x + ny*n.y + nz*n.z)/nl > th && (!poly || inPoly(poly, cx, cy))) { k = i; break; } }
+    tag[t] = k; cnt[k]++; }
+  const IA = idx.constructor, lists = [...cnt].map(c => new IA(c*3)), fill = new Uint32Array(K + 1);
+  for (let t=0;t<nt;t++){ const k = tag[t], o = fill[k]*3, L = lists[k]; L[o] = idx[t*3]; L[o+1] = idx[t*3+1]; L[o+2] = idx[t*3+2]; fill[k]++; }
+  if (!g.boundingSphere) g.computeBoundingSphere();
+  const mk = L => { const ng = new THREE.BufferGeometry(); for (const [nm, a] of Object.entries(g.attributes)) ng.setAttribute(nm, a); ng.setIndex(new THREE.BufferAttribute(L, 1)); ng.boundingSphere = g.boundingSphere.clone(); return ng; };
+  mesh.geometry = mk(lists[K]);
+  PANELS.forEach((p, k) => { if (cnt[k] < 50) return;
+    const pm = new THREE.Mesh(mk(lists[k]), mesh.material); pm.userData.partId = 'body'; pm.userData.panel = p.id;
+    let h = p.hinge;
+    if (h === 'top') {   // hinge line along the panel's top edge, on the skin itself, so the panel swings clear of the body
+      const L = lists[k]; let my = -1e9; for (let i=0;i<L.length;i++) my = Math.max(my, V[L[i]*3+1]);
+      let sz = 0, sn = 0; for (let i=0;i<L.length;i++){ const o = L[i]*3; if (V[o+1] > my - .04) { sz += V[o+2]; sn++; } } h = [(p.box[0] + p.box[1])/2, my, sz/sn]; }
+    const pivot = new THREE.Group(); pivot.position.set(...h);
+    const carrier = new THREE.Group(); carrier.matrixAutoUpdate = false; carrier.matrix.makeTranslation(-h[0], -h[1], -h[2]).multiply(M);
+    carrier.add(pm); pivot.add(carrier); bodyPart.obj.add(pivot); panelObjs[p.id] = { pivot, mesh:pm, def:p, a:0, tris:cnt[k], hinge:h }; });
+}
+const anyOpen = () => PANELS.some(p => st.open[p.id] && panelObjs[p.id]);
+function stepPanels(dt){
+  let mx = 0; const on = gid() === 'g1';
+  for (const o of Object.values(panelObjs)) { const want = on && st.open[o.def.id] ? 1 : 0; o.a += (want - o.a)*(1 - Math.pow(.004, dt)); if (Math.abs(want - o.a) < .003) o.a = want;
+    o.pivot.rotation[o.def.axis] = o.def.open*ease(o.a); mx = Math.max(mx, o.a); }
+  const vis = mx > .01;
+  if (vis !== st.panelVis) { st.panelVis = vis; const bm = bodyPart.mats[0]; if (bm && hi3d) { bm.side = vis ? THREE.DoubleSide : THREE.FrontSide; bm.needsUpdate = true; } applyGate(true); }   // show the interior only while something is open
+}
+function pickPanel(ev){
+  const os = Object.values(panelObjs); if (!os.length) return null;
+  const r = renderer.domElement.getBoundingClientRect(); ptr.set(((ev.clientX - r.left)/r.width)*2 - 1, -((ev.clientY - r.top)/r.height)*2 + 1); ray.setFromCamera(ptr, camera);
+  const hits = ray.intersectObjects(os.map(o => o.mesh), false); return hits.length ? panelObjs[hits[0].object.userData.panel] : null;
+}
+
+// environment scenes for G1 (the Mars ground and sky from G0, relit) and the vehicle's lamps
+const marsGround = mars.children[0], marsSky = mars.children[1], skyMap = marsSky.material.map, ENV_FOG = new THREE.FogExp2(0xd29a74, .012);
+const ENVS = {
+  studio:{ name:'展厅' },
+  day:  { name:'白天', t:'−20 °C', light:'590 W/m²', wind:'5 m/s', desc:'赤道地区正午前后，天空呈黄褐色，能见度好。', act:'太阳翼充电，热管理待机。',
+          sky:0xffffff, fog:[0xd29a74,.012], sun:[0xfff1e0,1.9,[6,10,4]], hemi:[0xffe9d6,0x8a5a40,.9], exp:1, ground:0xd08a62, refl:1 },
+  night:{ name:'夜晚', t:'−75 °C', light:'仅星光', wind:'2 m/s', desc:'火星的两颗卫星很暗，夜间几乎只有星光，行驶靠车灯。', act:'前照灯、尾灯和灯带点亮，座舱与电池保温。',
+          sky:0x06070c, flat:true, fog:[0x06070c,.02], sun:[0x9fb4ff,.22,[-4,8,-6]], hemi:[0x34406a,0x0a0806,.22], exp:.95, ground:0x7a5a4c, stars:true, refl:.12 },
+};
+const envOn = () => gid() === 'g1' && st.env !== 'studio';
+const lampsOn = () => gid() === 'g1' && (st.lamps ?? st.env === 'night');
+const stars = (() => { const n = 900, a = new Float32Array(n*3); for (let i=0;i<n;i++){ const u = Math.random()*Math.PI*2, w = Math.acos(Math.random()*.96), r = 170; a[i*3] = Math.sin(w)*Math.cos(u)*r; a[i*3+1] = Math.cos(w)*r; a[i*3+2] = Math.sin(w)*Math.sin(u)*r; }
+  const p = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(a, 3)), new THREE.PointsMaterial({ color:0xdfe8ff, size:1.6, sizeAttenuation:false, fog:false, transparent:true, opacity:.9, depthWrite:false })); p.visible = false; mars.add(p); return p; })();
+const envFx = pointCloud(700, .07, { opacity:.75 }), envFxS = Array.from({ length:700 }, () => new THREE.Vector3((Math.random() - .5)*30, Math.random()*9, (Math.random() - .5)*30));
+function stepEnvFx(dt){
+  const e = envOn() ? ENVS[st.env] : null; if (!e || !e.fx) return; const frost = e.fx === 'frost';
+  envFxS.forEach((p, i) => { if (frost) { p.y -= (.5 + (i % 5)*.12)*dt; p.x += Math.sin(i + p.y)*.2*dt; if (p.y < 0) p.y = 9; }
+    else { p.x += (7 + (i % 7))*dt; p.y += Math.sin(i*1.7 + p.x*.4)*.5*dt; if (p.x > 15) { p.x = -15; p.y = Math.random()*5; } p.y = clamp(p.y, .05, 9); }
+    envFx.pos[i*3] = p.x; envFx.pos[i*3+1] = p.y; envFx.pos[i*3+2] = p.z; });
+  envFx.g.attributes.position.needsUpdate = true;
+}
+// lamps: two headlamps with beams, a red tail bar; LED strips and pod rings glow through the body shader (GLOW)
+const GLOW = { value:0 }, lamps = new THREE.Group(); lamps.visible = false; dmu.add(lamps);
+const headL = [], lampFx = [], glowTex = canvasTex(64, 64, (g) => { const r = g.createRadialGradient(32, 32, 1, 32, 32, 32); r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(.25, 'rgba(255,255,255,.55)'); r.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = r; g.fillRect(0, 0, 64, 64); });
+const LAMP_POS = [2.52, 1.56, .8];
+[1, -1].forEach(s => { const [lx, ly, lz] = LAMP_POS;
+  const sl = new THREE.SpotLight(0xe6f1ff, 0, 50, .5, .6, 1.3); sl.position.set(lx, ly, s*lz); sl.target.position.set(lx + 12, 0, s*(lz + .9)); dmu.add(sl, sl.target); headL.push(sl);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map:glowTex, color:0xeaf3ff, blending:THREE.AdditiveBlending, depthWrite:false, transparent:true, fog:false })); sp.scale.setScalar(1.5); sp.position.set(lx + .08, ly, s*lz); lamps.add(sp);
+  const beam = new THREE.Mesh(new THREE.ConeGeometry(2.4, 12, 28, 1, true).translate(0, -6, 0).rotateZ(Math.PI/2), new THREE.MeshBasicMaterial({ color:0xbfd8ff, transparent:true, opacity:.05, blending:THREE.AdditiveBlending, depthWrite:false, side:THREE.DoubleSide, fog:false }));
+  beam.position.set(lx, ly, s*lz); beam.rotation.set(0, -s*.07, -.12); lamps.add(beam); lampFx.push({ s, sl, sp, beam });
+  const ts = new THREE.Sprite(new THREE.SpriteMaterial({ map:glowTex, color:0xff2a1a, blending:THREE.AdditiveBlending, depthWrite:false, transparent:true, fog:false })); ts.scale.set(1.1, .7, 1); ts.position.set(-2.97, 1.74, s*.8); lamps.add(ts); });
+const tailBar = new THREE.Mesh(new THREE.BoxGeometry(.03, .035, 1.86), new THREE.MeshBasicMaterial({ color:0xff3b2a, fog:false })); tailBar.position.set(-2.955, 1.74, 0); lamps.add(tailBar);
+const tailL = new THREE.PointLight(0xff3020, 0, 5, 2); tailL.position.set(-3.3, 1.6, 0); dmu.add(tailL);
+function applyEnv(){
+  const e = envOn() ? ENVS[st.env] : null;
+  sun.color.setHex(e ? e.sun[0] : 0xfff1e0); sun.intensity = e ? e.sun[1] : 1.6; sun.position.set(...(e ? e.sun[2] : [6, 10, 4]));
+  hemi.color.setHex(e ? e.hemi[0] : 0xffffff); hemi.groundColor.setHex(e ? e.hemi[1] : 0x8a6a50); hemi.intensity = e ? e.hemi[2] : .9;
+  renderer.toneMappingExposure = e ? e.exp : 1;
+  // metal reflections come from the studio environment map: scale them with the scene so the car is not lit at night
+  const refl = e ? e.refl : 1; if (refl !== applyEnv.refl) { applyEnv.refl = refl; scene.traverse(o => { if (o.material) [].concat(o.material).forEach(m => { if (m.isMeshStandardMaterial) m.envMapIntensity = refl; }); }); }
+  const flat = !!(e && e.flat); if (!marsSky.material.map === !flat) { marsSky.material.map = flat ? null : skyMap; marsSky.material.needsUpdate = true; }
+  marsSky.material.color.setHex(e ? e.sky : 0xffffff); marsGround.material.color.setHex(e ? e.ground : 0xd08a62); marsGround.material.emissive.setHex(0x9fb0c8); marsGround.material.emissiveIntensity = e && e.frost ? e.frost : 0;   // frost lifts the red soil towards pale blue-grey
+  if (e) { ENV_FOG.color.setHex(e.fog[0]); ENV_FOG.density = e.fog[1]; scene.fog = ENV_FOG; }
+  stars.visible = !!(e && e.stars); envFx.p.visible = !!(e && e.fx);
+  if (e && e.fx) { const c = new THREE.Color(e.fx === 'frost' ? 0xffffff : 0xe8a871); for (let i=0;i<envFx.n;i++) paint(envFx, i, c); envFx.g.attributes.color.needsUpdate = true; envFx.p.material.size = e.fx === 'frost' ? .06 : .09; }
+  const on = lampsOn(); lamps.visible = on; headL.forEach(l => l.intensity = on ? 900 : 0); tailL.intensity = on ? 2.5 : 0; GLOW.value = on ? 1 : 0; stripFx.userData.lights.forEach(l => l.intensity = on ? 7 : 0);
+}
+function renderStageBar(){
+  const el = $('#stagebar'); if (gid() !== 'g1') { el.hidden = true; return; }
+  const on = lampsOn(); el.hidden = false;
+  el.innerHTML = '<span>场景</span>' + Object.entries(ENVS).map(([k, v]) => `<button class="btn" data-env="${k}" aria-pressed="${st.env === k}">${v.name}</button>`).join('') + `<i></i><button class="btn" data-lamp="1" aria-pressed="${on}">车灯 ${on ? '开' : '关'}</button>`;
+}
+function g1ControlsHTML(){
+  const e = ENVS[st.env], has = Object.keys(panelObjs).length > 0, on = lampsOn();
+  return `<h3>开闭件</h3>
+  <div class="btnrow">${PANELS.map(p => `<button class="btn" data-panel="${p.id}" aria-pressed="${!!st.open[p.id]}" ${has ? '' : 'disabled'}>${p.name}</button>`).join('')}<button class="btn" data-panel="all">${anyOpen() ? '全部关闭' : '全部打开'}</button></div>
+  <p class="disclaim" style="margin:6px 0 0">${has ? '也可以直接点击左侧车身上的舱门、前舱盖或后舱盖。打开后能看到车内的座舱、电池和电驱。' : '模型加载完成后可用。'}</p>
+  <h3>环境场景</h3>
+  ${st.env === 'studio' ? '<p class="disclaim" style="margin:0">用左侧画面下方的按钮切换展厅、白天、夜晚，并开关车灯。</p>' : `<p class="disclaim" style="margin:0 0 4px">当前：${e.name}。用左侧画面下方的按钮切换场景、开关车灯。</p><table class="spec"><tbody>
+    <tr><td>环境</td><td>${e.desc}</td></tr><tr><td>气温 / 光照 / 风速</td><td class="num">${e.t} · ${e.light} · ${e.wind}</td></tr><tr><td>车辆状态</td><td>${e.act}</td></tr></tbody></table>`}`;
+}
+
+/* ============================== G1: Hi3D models for the cabin interior, the inner side of each panel, and the lamps */
+// Hi3D returns each object in the pose of its concept image, so the model's own axes are found from its vertices
+// (principal axes: a = longest, b = middle, c = shortest) and then mapped onto a target box on the vehicle.
+function principalFrame(root){
+  root.updateMatrixWorld(true); const pts = [], v = new THREE.Vector3();
+  root.traverse(o => { if (!o.isMesh) return; const p = o.geometry.attributes.position, step = Math.max(1, Math.floor(p.count/20000));
+    for (let i=0;i<p.count;i+=step){ v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld); pts.push(v.x, v.y, v.z); } });
+  const n = pts.length/3, m = [0,0,0]; for (let i=0;i<n;i++) for (let k=0;k<3;k++) m[k] += pts[i*3+k]/n;
+  const A = [[0,0,0],[0,0,0],[0,0,0]]; for (let i=0;i<n;i++) for (let r=0;r<3;r++) for (let c=r;c<3;c++) A[r][c] += (pts[i*3+r] - m[r])*(pts[i*3+c] - m[c])/n;
+  A[1][0] = A[0][1]; A[2][0] = A[0][2]; A[2][1] = A[1][2];
+  const E = [[1,0,0],[0,1,0],[0,0,1]];   // Jacobi eigen-decomposition of the 3x3 covariance
+  for (let sweep=0;sweep<24;sweep++) for (const [p, q] of [[0,1],[0,2],[1,2]]) { if (Math.abs(A[p][q]) < 1e-12) continue;
+    const th = .5*Math.atan2(2*A[p][q], A[q][q] - A[p][p]), c = Math.cos(th), s = Math.sin(th);
+    for (let k=0;k<3;k++){ const akp = A[k][p], akq = A[k][q]; A[k][p] = c*akp - s*akq; A[k][q] = s*akp + c*akq; }
+    for (let k=0;k<3;k++){ const apk = A[p][k], aqk = A[q][k]; A[p][k] = c*apk - s*aqk; A[q][k] = s*apk + c*aqk; }
+    for (let k=0;k<3;k++){ const ekp = E[k][p], ekq = E[k][q]; E[k][p] = c*ekp - s*ekq; E[k][q] = s*ekp + c*ekq; } }
+  const order = [0,1,2].sort((i, j) => A[j][j] - A[i][i]);
+  const ax = order.map(i => { const a = new THREE.Vector3(E[0][i], E[1][i], E[2][i]).normalize(); const k = [Math.abs(a.x), Math.abs(a.y), Math.abs(a.z)]; if (a.getComponent(k.indexOf(Math.max(...k))) < 0) a.negate(); return a; });
+  ax[2] = new THREE.Vector3().crossVectors(ax[0], ax[1]);   // right-handed
+  const lo = [1e9,1e9,1e9], hi = [-1e9,-1e9,-1e9];
+  for (let i=0;i<n;i++){ v.set(pts[i*3] - m[0], pts[i*3+1] - m[1], pts[i*3+2] - m[2]); for (let k=0;k<3;k++){ const d = v.dot(ax[k]); if (d < lo[k]) lo[k] = d; if (d > hi[k]) hi[k] = d; } }
+  const centre = new THREE.Vector3(...m); for (let k=0;k<3;k++) centre.addScaledVector(ax[k], (lo[k] + hi[k])/2);
+  return { axes:ax, centre, size:[0,1,2].map(k => hi[k] - lo[k]) };
+}
+// target = { C centre, U / V / N unit axes, S sizes along them }; map = which model axis goes to U, V, N, e.g. ['+a','-c','+b']
+function fitBox(src, target, map){
+  const pf = src.userData.pf || (src.userData.pf = principalFrame(src));
+  const pick = s => { const i = 'abc'.indexOf(s[1]); return [pf.axes[i].clone().multiplyScalar(s[0] === '-' ? -1 : 1), pf.size[i]]; };
+  const [c0, e0] = pick(map[0]), [c1, e1] = pick(map[1]), [c2, e2] = pick(map[2]);
+  const Mt = new THREE.Matrix4().makeBasis(c0, c1, c2).transpose(), B = new THREE.Matrix4().makeBasis(target.U, target.V, target.N);
+  const g = new THREE.Group(); g.matrixAutoUpdate = false;
+  g.matrix.makeTranslation(target.C.x, target.C.y, target.C.z).multiply(B).multiply(new THREE.Matrix4().makeScale(target.S[0]/e0, target.S[1]/e1, target.S[2]/e2)).multiply(Mt)
+    .multiply(new THREE.Matrix4().makeTranslation(-pf.centre.x, -pf.centre.y, -pf.centre.z));
+  g.add(src); return g;
+}
+const G1_TRIS = { interior:250000, door:100000, hood:100000, deck:60000, headlamp:60000, tailbar:40000 }, G1_TEX = { interior:2048, door:2048, hood:2048, deck:1024, headlamp:1024, tailbar:1024 };
+// model axis for [length, height, outward normal] of each target box, set after looking at each model
+const G1_MAP = { interior:['+a','+c','-b'], door:['+a','+b','-c'], hood:['-b','+a','-c'], deck:['+b','+a','-c'], headlamp:['+b','-c','+a'], tailbar:['+a','+c','+b'] };
+const HIDE_WITH_INTERIOR = new Set(['cabin','vcu','harness','bms']);   // parts that would sit inside the modelled cabin
+const g1Src = {}; let g1Inst = [], interiorObj = null;
+const V3 = (x, y, z) => new THREE.Vector3(x, y, z);
+const LAMP_AT = [1.03, .5];   // height and half-spacing of the headlamps on the nose plate
+function bodyHit(o, dir){   // first point where a ray meets the body shell, in vehicle coordinates
+  const meshes = []; hi3d.traverse(m => { if (m.isMesh) meshes.push(m); }); Object.values(panelObjs).forEach(p => meshes.push(p.mesh));
+  bodyPart.obj.updateMatrixWorld(true);
+  const rc = new THREE.Raycaster(o.clone().applyMatrix4(bodyPart.obj.matrixWorld), dir.clone().transformDirection(bodyPart.obj.matrixWorld));
+  const h = rc.intersectObjects(meshes, false)[0]; return h ? bodyPart.obj.worldToLocal(h.point.clone()) : null;
+}
+function g1Targets(){
+  const T = [];
+  for (const [id, o] of Object.entries(panelObjs)) { const h = o.hinge;
+    if (id === 'doorL' || id === 'doorR') { const s = id === 'doorL' ? 1 : -1;   // slab just inside the door skin
+      T.push({ key:'door', parent:o.pivot, C:V3(.045 - h[0], 1.435 - h[1], -s*.06), U:V3(1,0,0), V:V3(0,1,0), N:V3(0,0,s), S:[1.41,.71,.075] }); }
+    else if (id === 'hood') { const U = V3(.925,-.380,0), N = V3(.380,.925,0); T.push({ key:'hood', parent:o.pivot, C:U.clone().multiplyScalar(.75).addScaledVector(N, -.05), U, V:V3(0,0,-1), N, S:[1.5,1.44,.07] }); }
+    else if (id === 'deck') { const U = V3(-.942,-.336,0), N = V3(-.336,.942,0); T.push({ key:'deck', parent:o.pivot, C:U.clone().multiplyScalar(.46).addScaledVector(N, -.045), U, V:V3(0,0,1), N, S:[.92,1.66,.06] }); } }
+  T.push({ key:'interior', parent:bodyPart.obj, C:V3(.52,1.52,0), U:V3(1,0,0), V:V3(0,1,0), N:V3(0,0,1), S:[2.25,.84,1.6], interior:true });
+  // lamps sit on the shell itself: a ray finds the skin at the upper corners of the nose plate and at the rear edge
+  [1, -1].forEach(s => { const hit = bodyHit(V3(4.5, LAMP_AT[0], s*LAMP_AT[1]), V3(-1,0,0)); if (!hit) return; const S = [.27,.235,.34], C = V3(hit.x + S[0]/2 - .09, hit.y, hit.z);
+    T.push({ key:'headlamp', parent:bodyPart.obj, C, U:V3(1,0,0), V:V3(0,1,0), N:V3(0,0,s), S });
+    const f = lampFx.find(l => l.s === s), lx = C.x + S[0]/2; f.sl.position.set(lx, C.y, C.z); f.sl.target.position.set(lx + 12, 0, C.z + s*.9); f.sp.position.set(lx + .05, C.y, C.z); f.beam.position.set(lx, C.y, C.z); });
+  const th = bodyHit(V3(-4.5, 1.74, 0), V3(1,0,0)); if (th) T.push({ key:'tailbar', parent:bodyPart.obj, C:V3(th.x - .05, th.y, 0), U:V3(0,0,1), V:V3(0,1,0), N:V3(-1,0,0), S:[1.7,.2,.16] });
+  return T;
+}
+function placeG1(){
+  g1Inst.forEach(o => { if (o.parent) o.parent.remove(o); }); g1Inst = []; interiorObj = null;
+  if (!hi3d || !Object.keys(panelObjs).length) return;
+  for (const t of g1Targets()) { const src = g1Src[t.key]; if (!src) continue;
+    const inst = src.clone(true); inst.userData.pf = src.userData.pf || (src.userData.pf = principalFrame(src));
+    const g = fitBox(inst, t, G1_MAP[t.key]); t.parent.add(g); g1Inst.push(g);
+    if (t.interior) { interiorObj = g; g.visible = false; }
+    else g.traverse(o => { if (!o.material) return; o.userData.partId = 'body'; const m = o.material; if (!m.userData.base) m.userData.base = { opacity:1, emissive:(m.emissive ? m.emissive.clone() : null), ei:m.emissiveIntensity ?? 1 }; if (!bodyPart.mats.includes(m)) bodyPart.mats.push(m); }); }
+  tailBar.visible = !g1Src.tailbar;   // the modelled bar replaces the placeholder light blade
+  bodyPart._look = null;
+}
+async function loadG1Models(){
+  const A = await ASSET; const r = await fetch(A + 'g1/manifest.json').catch(() => null); if (!r || !r.ok) return; const mf = await r.json();
+  for (const key of Object.keys(G1_MAP)) { if (!mf[key]) continue;
+    try { const buf = await fetchModelEntry(A + 'g1/', mf[key]);
+      const g = await new Promise((ok, bad) => new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).parse(buf, '', ok, bad));
+      await simplifyScene(g.scene, G1_TRIS[key]); shrinkTextures(g.scene, G1_TEX[key]); g1Src[key] = g.scene;
+    } catch (e) { console.warn('g1 model', key, e); } }
+  placeG1(); applyGate(gid() !== 'g1');
+}
+// light strips: halo sheets along both sides, an underglow on the ground and two fill lights, all pulsing with the shader wave
+const GLOW_T = { value:0 }, stripFx = new THREE.Group(); lamps.add(stripFx);
+{ const halo = canvasTex(256, 64, (g, w, h) => { const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(.5, 'rgba(255,255,255,1)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+    const e = g.createLinearGradient(0, 0, w, 0); e.addColorStop(0, 'rgba(0,0,0,1)'); e.addColorStop(.12, 'rgba(0,0,0,0)'); e.addColorStop(.88, 'rgba(0,0,0,0)'); e.addColorStop(1, 'rgba(0,0,0,1)'); g.globalCompositeOperation = 'destination-out'; g.fillStyle = e; g.fillRect(0, 0, w, h); });
+  [1, -1].forEach(s => { const m = new THREE.Mesh(new THREE.PlaneGeometry(4.2, .55), new THREE.MeshBasicMaterial({ map:halo, color:0x5a8cff, transparent:true, opacity:.5, blending:THREE.AdditiveBlending, depthWrite:false, side:THREE.DoubleSide, fog:false }));
+    m.position.set(.15, 1.14, s*1.12); if (s < 0) m.rotation.y = Math.PI; stripFx.add(m);
+    const pl = new THREE.PointLight(0x4f7dff, 0, 6.5, 1.8); pl.position.set(.2, .95, s*1.7); dmu.add(pl); stripFx.userData.lights = (stripFx.userData.lights || []).concat(pl); });
+  const under = new THREE.Mesh(new THREE.PlaneGeometry(7.4, 4.2), new THREE.MeshBasicMaterial({ map:glowTex, color:0x3f6cff, transparent:true, opacity:.4, blending:THREE.AdditiveBlending, depthWrite:false, fog:false }));
+  under.rotation.x = -Math.PI/2; under.position.y = .03; stripFx.add(under); stripFx.userData.under = under; }
+function stepGlow(dt){
+  GLOW_T.value += dt; if (!lamps.visible) return;
+  const p = .75 + .25*Math.sin(GLOW_T.value*2.2);
+  stripFx.children.forEach(m => { if (m.material) m.material.opacity = (m === stripFx.userData.under ? .42 : .5)*p; });
+}
+
 /* ================================================================ state */
 const st = { gate:0, explode:.35, explodeShown:0, explodeAnim:null, tint:false, selPart:null, valOpen:'V1', valViz:'V1', eolOpen:'E1', eolViz:'E1', vt:0, vplay:true, vizOn:null,
-  selStation:'ST20', galleryIdx:0, lift:0, gallery:null, carName:null };
+  selStation:'ST20', galleryIdx:0, open:{}, panelVis:false, env:'studio', lamps:null, reqOpen:null, ecn:'ECN-001', vin:42, lift:0, gallery:null, carName:null };
 
 // theme colours used inside the render loop, cached (getComputedStyle per frame is expensive)
 const COL = { accent:new THREE.Color(), cyan:new THREE.Color() };
@@ -1728,23 +2114,25 @@ function curViz(){ const ts = testSet(); return ts ? st[ts.key] : null; }
 
 function applyGate(silent){
   const g = gid(); const useHi = hi3dState === 'ok'; parts.forEach(p => p._look = null);
-  controls.autoRotate = (g === 'g0' || g === 'g1') || (g === 'g3' && !!st.explodeAnim);
+  controls.autoRotate = (g === 'g0' || (g === 'g1' && !anyOpen()) || g === 'ov') || (g === 'g3' && !!st.explodeAnim);
   vizSwitch();
   const vz = st.vizOn ? VIZ[st.vizOn] : null;
-  fac.visible = g === 'g5'; eol.visible = g === 'g6'; mars.visible = g === 'g0'; scene.fog = g === 'g0' ? MARS_FOG : null; grid.visible = g !== 'g5' && g !== 'g6' && g !== 'g0'; shadow.visible = g !== 'g5';
+  fac.visible = g === 'g5'; eol.visible = g === 'g6'; mars.visible = g === 'g0' || envOn(); scene.fog = g === 'g0' ? MARS_FOG : null; applyEnv(); grid.visible = g !== 'g5' && g !== 'g6' && g !== 'g0' && !envOn(); shadow.visible = g !== 'g5';
   Object.entries(EQ).forEach(([k,o]) => o.visible = g === 'g6' && !!vz && (vz.equip || []).includes(k));
   if (g === 'g6' && vz && (vz.equip||[]).includes('pool')) eolFloor.visible = false; else eolFloor.visible = true;
   if (g !== 'g5') parts.forEach(p => {
     let mode = 'normal';
-    const showcase = g === 'g0' || g === 'g1' || ((g === 'g2' || g === 'g6') && !(vz && vz.xray));
-    if (showcase) mode = useHi ? ((p.id === 'body' || (p.isWheel && hiWheelsOn)) ? (g === 'g0' ? 'holo' : 'normal') : 'hidden') : (g === 'g0' ? 'holo' : 'normal');
+    const showcase = g === 'g0' || g === 'g1' || g === 'ov' || ((g === 'g2' || g === 'g6') && !(vz && vz.xray));
+    if (showcase) mode = useHi ? ((p.id === 'body' || (p.isWheel && hiWheelsOn)) ? (g === 'g0' ? 'holo' : 'normal') : (g === 'g1' && (st.panelVis || anyOpen()) && !(interiorObj && HIDE_WITH_INTERIOR.has(p.id)) ? 'normal' : 'hidden')) : (g === 'g0' ? 'holo' : 'normal');
     else if (g === 'g2' || g === 'g6') mode = vz.xray.hi.includes(p.id) ? 'hi' : (vz.xray.normal.includes(p.id) ? 'normal' : (p.id === 'body' || p.isWheel ? 'ghost' : 'ghost'));
     else if (g === 'g3') mode = p.id === 'body' ? (st.selPart === 'body' ? 'hi' : 'ghost') : (st.selPart === p.id ? 'hi' : 'normal');
+    else if (g === 'tr') mode = ecnCur().parts.includes(p.id) ? 'hi' : 'ghost';
     else if (g === 'g4') mode = p.st === st.selStation ? 'hi' : (p.id === 'body' ? 'ghost' : (stationIndex(p.st) < stationIndex(st.selStation) ? 'normal' : 'ghost'));
     look(p, mode);
   });
+  if (interiorObj) interiorObj.visible = g === 'g1' && (st.panelVis || anyOpen());
   if (g !== 'g5') $('#flow').hidden = true;
-  renderHud(); renderLegend(); vizUi(true);
+  renderHud(); renderLegend(); renderStageBar(); vizUi(true);
   if (!silent) renderPanel();
 }
 function vizSwitch(){
@@ -1756,7 +2144,7 @@ function vizSwitch(){
   st.vizOn = want;
 }
 // ?seek: debug hook for screenshots, jump a validation animation to t seconds and pause
-if (new URLSearchParams(location.search).has('seek')) { window.__vizSeek = t => { st.vt = t; st.vplay = false; }; window.__dbg = { mecha, get model(){ return mechaModel; }, get rig(){ return mechaRig; } }; }
+if (new URLSearchParams(location.search).has('seek')) { window.__vizSeek = t => { st.vt = t; st.vplay = false; }; window.__dbg = { mecha, carRig:rig, st, G1_MAP, placeG1, g1Src, get g1Inst(){ return g1Inst; }, applyGate, get panels(){ return panelObjs; }, headL, lamps, scene, camera, controls, dmu, bodyPart, get parts(){ return parts; }, get hiWheelsOn(){ return hiWheelsOn; }, get model(){ return mechaModel; }, get rig(){ return mechaRig; } }; }
 let vizUiAt = 0;
 function vizUi(force){
   const ro = $('#readout'); const id = st.vizOn;
@@ -1776,12 +2164,12 @@ function vizUi(force){
 function renderHud(){
   const g = GATES[st.gate]; const vz = st.vizOn ? VIZ[st.vizOn] : null;
   const lite = assetDir === 'lite/', src = hi3dState === 'ok' ? (lite ? 'Hi3D 模型 · 99 万面（轻量版）' : 'Hi3D 原始模型 · 496 万面') : (hi3dState === 'loading' ? `加载 Hi3D 模型 ${hi3dPct}%（${lite ? '8 MB' : '114 MB'}）` : '工程简化模型');
-  const mode = vz ? vz.title : { g0:'概念轮廓（尚未定型）', g1:'整车展示', g3:'爆炸视图', g4:'工位高亮', g5:'数字孪生总装线' }[g.id];
+  const mode = vz ? vz.title : { ov:'整车展示', tr:'变更影响高亮', g0:'概念轮廓（尚未定型）', g1:(st.env === 'studio' ? '整车展示' : ENVS[st.env].name + ' · ' + ENVS[st.env].t), g3:'爆炸视图', g4:'工位高亮', g5:'数字孪生总装线' }[g.id];
   $('#hud').innerHTML = `<span class="chip on">${g.code} · ${g.name}</span><span class="chip">${mode}</span><span class="chip">${src}</span>${partStatus ? `<span class="chip">${partStatus}</span>` : ''}`;
   const notes = { V1:'粒子颜色越暖表示局部流速越高', V2:'颗粒从车身左侧吹来，遇车身后被抬升绕流', V3:'模组颜色 = 电芯温度（蓝冷 → 红热），橙色高亮为热管理模块', V4:'黄色轨迹为高能粒子；储水夹层出现后部分粒子在舱顶被吸收',
     V6:'每个车轮按自己脚下的地面独立起伏（悬架行程）', V7:'舱内为循环滑石粉，座舱同时保压', V8:'淡蓝色为推进器高速排气，地面颗粒为被吹起的风化层', V9:'紫色波面由天线向车辆汇聚：车辆承受外部强电磁场；后段为离子束照射计算单元',
     E1:'光隧道 LED 条纹在不锈钢表面形成反射线，用于发现板件错位', E2:'车轮与转毂滚筒同步转动', E4:'车轮入水处溅起水花', E5:'蓝色光点为充电电流示意' };
-  $('#note3d').textContent = (st.vizOn && notes[st.vizOn]) || (g.id === 'g0' ? '立项阶段只确定任务与指标，车辆外观尚未定型，这里仅以全息轮廓示意；造型在 G1 确定' : g.id === 'g3' ? '点击零件或标签查看参数 · 拖动旋转 · 滚轮缩放' : (g.id === 'g5' ? '拖动可自由旋转视角，镜头会跟随车辆' : (hi3dState === 'loading' ? '首次打开需下载完整模型，请稍候' : '')));
+  $('#note3d').textContent = (st.vizOn && notes[st.vizOn]) || (g.id === 'g0' ? '立项阶段只确定任务与指标，车辆外观尚未定型，这里仅以全息轮廓示意；造型在 G1 确定' : g.id === 'tr' ? '橙色高亮为本次变更影响的零件，其余零件半透明' : g.id === 'g3' ? '点击零件或标签查看参数 · 拖动旋转 · 滚轮缩放' : (g.id === 'g5' ? '拖动可自由旋转视角，镜头会跟随车辆' : (hi3dState === 'loading' ? '首次打开需下载完整模型，请稍候' : '')));
 }
 function renderLegend(){
   const g = gid();
@@ -1811,8 +2199,8 @@ function applyExplode(E){
   leaders.visible = gid() === 'g3' && E > .04; leaders.material.opacity = clamp(E*2, 0, .6);
 }
 function updateLabels(){
-  const show = gid() === 'g3' && st.explodeShown > .25; const r = stageEl.getBoundingClientRect();
-  labelsEl.querySelectorAll('.lbl').forEach(el => { const p = partById(el.dataset.lbl); if (!show || !p.obj.visible) { el.hidden = true; return; }
+  const tr = gid() === 'tr', trIds = tr ? ecnCur().parts : null, show = (gid() === 'g3' || tr) && st.explodeShown > .25; const r = stageEl.getBoundingClientRect();
+  labelsEl.querySelectorAll('.lbl').forEach(el => { const p = partById(el.dataset.lbl); if (!show || !p.obj.visible || (tr && !trIds.includes(p.id))) { el.hidden = true; return; }
     const v = new THREE.Vector3(); p.obj.getWorldPosition(v); v.y += .35; v.project(camera);
     if (v.z > 1) { el.hidden = true; return; }
     el.hidden = false; el.style.left = ((v.x+1)/2*r.width) + 'px'; el.style.top = ((1-v.y)/2*r.height) + 'px'; el.style.opacity = clamp((st.explodeShown-.25)*4, 0, 1);
@@ -1837,15 +2225,10 @@ function viewG0(){
     <tr><td>沙尘</td><td>细颗粒风化层，全球性沙尘暴可持续数周</td></tr>
     <tr><td>辐射</td><td class="num">地表约 0.2–0.25 Sv/年（好奇号 RAD 实测量级）</td></tr>
   </tbody></table>
-  <h3>整车目标</h3>
-  <table class="spec"><tbody>
-    <tr><td>乘员 / 座舱</td><td>2 人 · 70 kPa 加压座舱</td></tr>
-    <tr><td>驱动</td><td>6×6，三电驱（每轴一套）</td></tr>
-    <tr><td>电池</td><td class="num">220 kWh 结构电池 · 800 V</td></tr>
-    <tr><td>续航 / 极速</td><td class="num">500 km（松软地面） / 60 km/h</td></tr>
-    <tr><td>整备质量</td><td class="num">${fmt(totalMass())} kg（火星重量 ≈ ${fmt1(totalMass()*3.71/1000,1)} kN）</td></tr>
-    <tr><td>跳跃能力</td><td class="num">单次 ≤ 50 m</td></tr>
-  </tbody></table>
+  <h3>整车需求清单（${REQS.length} 条）</h3>
+  <p class="disclaim" style="margin:0 0 6px">每条需求有编号、目标值和负责系统。点开可以看到它来自哪项环境或任务输入、由哪项验证证明、是否触发过设计变更。</p>
+  <div class="vstat" style="margin:0"><span class="pill ok">已验证满足 ${REQS.filter(r => reqStatus(r)[0] === 'ok').length}</span><span class="pill warn">遗留或待验证 ${REQS.filter(r => reqStatus(r)[0] === 'warn').length}</span></div>
+  ${reqListHTML()}
   <h3>第一性原理设计理念：五步工作法</h3>
   <ol class="steps">
     <li><div><b>质疑每一条需求</b><span>“必须有车架”？火星车的外骨骼本身就能承载，于是取消车架。</span></div></li>
@@ -1861,6 +2244,7 @@ function viewG1(){
   return `<div class="eyebrow">G1 · 概念与造型</div>
   <h2>从一段描述到可旋转的 3D 整车</h2>
   <p class="lede">先用生图模型出四个视角的概念图，确认外观一致后，交给 Hi3D 由图片生成带 PBR 贴图的 3D 模型。左侧就是这台车。</p>
+  ${g1ControlsHTML()}
   <img class="hero-img" src="${cur[0]}" alt="${carName()} 概念图：${cur[1]}">
   <div class="gallery" role="group" aria-label="概念图视角">${imgs.map((m,i) => `<button data-gal="${i}" aria-pressed="${i===st.galleryIdx}"><img src="${m[0]}" alt=""><small>${m[1]}</small></button>`).join('')}</div>
   <h3>生成流程</h3>
@@ -1879,16 +2263,20 @@ function benchHTML(id){ const z = VIZ[id];
     <div class="prog"><span id="vprog"></span></div><div class="phase" id="vphase"></div><div class="vchart" id="vchart"></div></div>`; }
 function testListHTML(list, cur, open){
   return `<div class="vlist">${list.map(v => `<div class="vitem" data-open="${open===v.id}">
-    <button data-test="${v.id}" aria-expanded="${open===v.id}"><span class="vid">${v.id}</span><span class="vn">${v.name}<small>${v.cat}${cur===v.id ? ' · 正在试验' : ''}</small></span><span class="pill ${v.st}">${v.label}</span></button>
-    ${open===v.id ? `<div class="vbody"><dl><dt>方法</dt><dd>${v.method}</dd><dt>判定标准</dt><dd>${v.crit}</dd><dt>结果</dt><dd>${v.res}</dd><dt>结论 / 说明</dt><dd>${v.note}</dd></dl></div>` : ''}
+    <button data-test="${v.id}" aria-expanded="${open===v.id}"><span class="vid">${v.id}</span><span class="vn">${v.name}<small>${v.cat}${DVP[v.id] ? ' · ' + DVP[v.id][0] : ''}${cur===v.id ? ' · 正在试验' : ''}</small></span><span class="pill ${v.st}">${v.label}</span></button>
+    ${open===v.id ? `<div class="vbody"><dl><dt>方法</dt><dd>${v.method}</dd><dt>判定标准</dt><dd>${v.crit}</dd><dt>结果</dt><dd>${v.res}</dd><dt>结论 / 说明</dt><dd>${v.note}</dd>${traceRowsHTML(v)}</dl></div>` : ''}
   </div>`).join('')}</div>`; }
 function viewG2(){
   const cnt = s => VAL.filter(v => v.st === s).length;
   return `<div class="eyebrow">G3 · 样车与验证</div>
-  <h2>9 项验证，2 项有条件通过，1 项触发设计变更</h2>
-  <p class="lede">按“性能 / 环境 / 安全 / 可靠性”四类安排验证。点击任意一项，左侧切换到对应试验台，右上角是实时读数，下方曲线随试验进度绘制。</p>
-  <div class="vstat"><span class="pill ok">通过 ${cnt('ok')}</span><span class="pill warn">有条件通过 ${cnt('warn')}</span><span class="pill bad">设计变更 ${cnt('bad')}</span></div>
+  <h2>${VAL.length} 项设计验证，${ECNS.length} 项触发设计变更并完成复验</h2>
+  <p class="lede">按“性能 / 环境 / 安全 / 可靠性”四类安排验证，每项都标明它证明哪条需求。点击任意一项，左侧切换到对应试验台，右上角是实时读数，下方曲线随试验进度绘制。</p>
+  <div class="vstat"><span class="pill ok">通过 ${cnt('ok')}</span><span class="pill warn">有条件通过 ${cnt('warn')}</span><span class="pill bad">设计变更 ${cnt('bad')}</span><span class="pill ok">变更后复验通过 ${ECNS.length}</span></div>
   ${benchHTML(st.valViz)}${testListHTML(VAL, st.valViz, st.valOpen)}
+  <h3>验证计划与报告（DVP&R）汇总</h3>${dvpTableHTML()}
+  <h3>彩蛋</h3>
+  <div class="vlist" style="margin-top:0"><div class="vitem" data-open="${st.valViz === 'V10' && st.valOpen === 'V10'}"><button data-test="V10" aria-expanded="${st.valViz === 'V10' && st.valOpen === 'V10'}"><span class="vid">★</span><span class="vn">${EGG.name}<small>娱乐演示，不计入验证结论${st.valViz === 'V10' ? ' · 正在演示' : ''}</small></span><span class="pill ok">${EGG.label}</span></button>
+    ${st.valViz === 'V10' && st.valOpen === 'V10' ? `<div class="vbody"><dl><dt>内容</dt><dd>${EGG.method}</dd><dt>结果</dt><dd>${EGG.res}</dd></dl></div>` : ''}</div></div>
   <div class="callout"><b>为什么火星上风阻不重要：</b> F = ½ρC<sub>d</sub>Av²。火星大气密度只有地球的 1.6%，60 km/h 时阻力约 5.9 N；而在松软风化层上的滚动阻力约 1,190 N。所以气动验证要关注沙尘冲刷、侧风和散热进风，而不是降低 C<sub>d</sub>。</div>
   <p class="disclaim">验证数据为方案阶段的仿真回放值（基于公开的火星环境参数和物理关系估算），不是实测结果。</p>`;
 }
@@ -1897,7 +2285,7 @@ function partListHTML(){
   return Object.entries(groups).map(([sys, list]) => { const seen = new Map();
     list.forEach(p => { const k = p.name.replace(/（.*）/,''); if (!seen.has(k)) seen.set(k, { p, n:0, m:0 }); const e = seen.get(k); e.n++; e.m += p.mass; });
     return `<div><div style="font-size:12px;color:var(--muted);margin:8px 0 2px">${sys}</div><div class="plist">${[...seen.entries()].map(([k,e]) =>
-      `<button data-part="${e.p.id}" aria-pressed="${st.selPart===e.p.id}"><i style="background:${SYS[sys].css}"></i><span>${k}${e.n>1?` ×${e.n}`:''}</span><span class="m">${fmt(e.m)} kg</span></button>`).join('')}</div></div>`; }).join('');
+      `<button data-part="${e.p.id}" aria-pressed="${st.selPart===e.p.id}"><i style="background:${SYS[sys].css}"></i><span>${k}${e.n>1?` ×${e.n}`:''}<small>${pnOf(e.p)} · ${bomOf(e.p)[1]}</small></span><span class="m">${fmt(e.m)} kg</span><span class="m">${(bomOf(e.p)[3]*e.n).toFixed(1)} 万</span></button>`).join('')}</div></div>`; }).join('');
 }
 function viewG3(){
   const ms = massBySys(), tot = totalMass(), three = ms['三电·电池'] + ms['三电·电机'] + ms['三电·电控'];
@@ -1911,11 +2299,13 @@ function viewG3(){
     <div class="ticks"><span>整车</span><span>总成级</span><span>零件级</span></div>
     <div class="btnrow"><button class="btn primary" data-exp="anim">${st.explodeAnim ? '停止演示' : '▶ 拆解演示'}</button><button class="btn" data-exp="0">合拢</button><button class="btn" data-exp="60">总成级</button><button class="btn" data-exp="100">零件级</button><button class="btn" data-exp="tint" aria-pressed="${st.tint}">系统着色</button></div>
   </div>
-  ${sel ? `<div class="pcard" style="margin-top:12px"><h4>${sel.name}</h4><div class="meta">${sel.sys} · 装配工位 ${sel.st} · ${fmt(sel.mass)} kg${subN ? ` · ${subN} 个子零件` : ''}</div><p style="margin:6px 0 0">${sel.spec}</p></div>` : `<p class="disclaim" style="margin-top:10px">点击左侧零件或标签查看参数。</p>`}
+  ${sel ? `<div class="pcard" style="margin-top:12px"><h4>${sel.name}</h4><div class="meta">${sel.sys} · 装配工位 ${sel.st} · ${fmt(sel.mass)} kg${subN ? ` · ${subN} 个子零件` : ''}</div><p style="margin:6px 0 0">${sel.spec}</p>${partExtraHTML(sel)}</div>` : `<p class="disclaim" style="margin-top:10px">点击左侧零件或标签查看参数。</p>`}
+  ${bomSummaryHTML()}
   <h3>质量分配</h3>
   <div class="massbar">${Object.entries(ms).map(([k,v]) => `<span title="${k} ${v} kg" style="width:${v/tot*100}%;background:${SYS[k].css}"></span>`).join('')}<span title="其他 ${OTHER_MASS} kg" style="width:${OTHER_MASS/tot*100}%;background:var(--line)"></span></div>
   <div class="disclaim" style="margin-top:4px">合计 ${fmt(tot)} kg，含内饰、流体等其他 ${OTHER_MASS} kg</div>
-  <h3>零件清单（BOM 一级）</h3>${partListHTML()}`;
+  <h3>工程 BOM（一级）：零件号、自制或外购、质量、成本</h3>${partListHTML()}
+  <h3>设计失效模式分析（DFMEA）高风险项</h3>${dfmeaHTML()}`;
 }
 // U-shaped final-assembly line: top row runs left→right (ST10–ST50), turns down on the right, bottom row runs right→left (ST60–ST100);
 // in and out are both on the left. One thick orange flow path with chevrons; feeders are blue dashed arrows.
@@ -1977,6 +2367,7 @@ function viewG4(){
   <div class="pcard" style="margin-top:12px"><h4>${s.id} · ${s.name}</h4><div class="meta num">周期 ${s.ct} s · 负荷 ${Math.round(s.ct/TAKT*100)}% · 机械臂 ${s.robots.length} · 人工 ${s.workers.length}${s.feeder ? ' · 来料：'+s.feeder : ''}</div>
     <p style="margin:6px 0 4px">${s.desc}</p><ul>${s.ops.map(o => `<li><span class="who ${whoCls(o[0])}" style="display:inline-block;padding:0 5px;margin-right:6px">${o[0]}</span>${o[1]} <span class="num" style="color:var(--muted)">${o[2]}–${o[3]} s</span></li>`).join('')}</ul>
     ${names.length ? `<div class="meta" style="margin-top:6px">本工位安装：${names.join('、')}</div>` : ''}</div>
+  <h3>关键工序控制计划</h3>${controlTableHTML()}
   <p class="disclaim">瓶颈工位为 ST60（${mx} s，负荷 ${Math.round(mx/TAKT*100)}%）。若产能提升到 25k，节拍降到 540 s，ST20 / ST50 / ST60 需要拆分或增加机器人。</p>`;
 }
 function viewG5(){
@@ -1989,7 +2380,8 @@ function viewG5(){
     <div class="clock"><span>仿真时间 <b id="lclock">00:00:00</b></span><span>车辆 <b>VIN ${carName()}-00042</b></span><span>当前 <b id="lstn">—</b></span><span>本工位剩余 <b id="lrem">—</b></span></div>
     <div class="strip" id="lstrip">${STATIONS.map((s,i) => `<button data-jump="${i}" title="${s.id} ${s.name}">${s.id.replace('ST','')}<span></span></button>`).join('')}</div>
   </div>
-  <div id="lcard"></div>`;
+  <div id="lcard"></div>
+  ${rampHTML()}`;
 }
 let lcardFor = -1;
 function stationCardHTML(i){
@@ -2029,29 +2421,185 @@ function viewG6(){
   <h2>${carName()} 下线前的 8 项 EOL 检测</h2>
   <p class="lede">车辆离开总装线后进入检测区，依次做外观、转毂、淋雨、涉水、充电、气密、高压和推进系统检测。点击任意一项，左侧切换到对应检测设备。</p>
   ${benchHTML(st.eolViz)}${testListHTML(EOL, st.eolViz, st.eolOpen)}
+  ${vehiclesHTML()}
   <h3>量产状态</h3>
   <table class="spec"><tbody>
     <tr><td>整备质量</td><td class="num">${fmt(totalMass())} kg</td></tr>
     <tr><td>主线工位 / 节拍</td><td class="num">${STATIONS.length} 个 / ${TAKT} s</td></tr>
-    <tr><td>设计变更</td><td>V8 跳跃推进改为 CH4/LOX 喷气；V2 前脸陶瓷涂层；V4 座舱储水夹层</td></tr>
+    <tr><td>设计变更</td><td>${ECNS.map(c => lnk('ecn:' + c.id, c.id) + ' ' + c.title).join('<br>')}</td></tr>
+    <tr><td>遗留问题</td><td>${openIssues().map(i => i.id + ' ' + i.title + '（' + i.due + '）').join('<br>') || '无'}</td></tr>
   </tbody></table>
   <h3>本作品用到的工具链</h3>
   <div class="tools">${[['GPT Image 2.6（ChatGPT）','四视图概念图'],['Hi3D MCP 连接器','图片生成 3D 模型、报价与任务查询'],['three.js','实时渲染、爆炸图、数字孪生产线、试验动画'],['Claude Code','需求拆解、验证方案、产线规划、页面开发'],['参考：teardown / Machine Skill','分层爆炸、实时读数、自动演示的做法'],['可选：OpenFOAM MCP / Blender MCP','真实 CFD 仿真 / 精细建模渲染']].map(([a,b]) => `<div class="tool"><b>${a}</b><span>${b}</span></div>`).join('')}</div>
   <p class="foot">${carName()} 为黑客松概念作品。验证、产线与检测数据为方案阶段的仿真回放值。</p>`;
 }
-const VIEWS = { g0:viewG0, g1:viewG1, g2:viewG2, g3:viewG3, g4:viewG4, g5:viewG5, g6:viewG6 };
+/* ---------------------------------------------------------------- traceability helpers and views */
+const lnk = (ref, text, title) => `<button class="lnk" data-go="${ref}"${title ? ` title="${title}"` : ''}>${text}</button>`;
+const testRef = id => (id[0] === 'V' ? 'val:' : 'eol:') + id;
+const testById = id => VAL.find(v => v.id === id) || EOL.find(v => v.id === id);
+const srcRef = s => s.startsWith('R-') ? 'req:' + s : (s.startsWith('ECN') ? 'ecn:' + s : testRef(s));
+const reqsOfTest = id => REQS.filter(r => r.by.includes(id));
+const ecnOfTest = id => ECNS.find(c => c.from === id);
+const ecnCur = () => ECNS.find(c => c.id === st.ecn) || ECNS[0];
+const reqNow = r => typeof r.now === 'function' ? r.now() : r.now;
+const openIssues = () => ISSUES.filter(i => i.st === 'open');
+function reqStatus(r){
+  if (r.open) return ['warn', r.by.length ? '遗留问题' : '待验证'];
+  if (r.check) return r.check() ? ['ok', '已满足'] : ['bad', '超标'];
+  if (r.ecn) return ['ok', '变更后满足'];
+  return r.by.every(id => testById(id).st === 'ok') ? ['ok', '已验证'] : ['warn', '有条件'];
+}
+function reqListHTML(){
+  return [...new Set(REQS.map(r => r.cat))].map(c => `<div style="font-size:12px;color:var(--muted);margin:10px 0 4px">${c}</div><div class="vlist" style="margin-top:0">${REQS.filter(r => r.cat === c).map(r => {
+    const [cls, lab] = reqStatus(r), open = st.reqOpen === r.id, ecn = r.ecn && ECNS.find(e => e.id === r.ecn), iss = r.open && ISSUES.find(i => i.id === r.open);
+    return `<div class="vitem req" data-open="${open}"><button data-req="${r.id}" aria-expanded="${open}"><span class="vid">${r.id}</span><span class="vn">${r.name}<small>${r.target}</small></span><span class="pill ${cls}">${lab}</span></button>
+      ${open ? `<div class="vbody"><dl><dt>来源</dt><dd>${r.src}</dd><dt>负责系统</dt><dd>${r.sys}</dd><dt>当前值</dt><dd>${reqNow(r)}</dd>
+        <dt>验证依据</dt><dd>${r.by.length ? r.by.map(id => lnk(testRef(id), id + ' ' + testById(id).name)).join(' ') : (r.proof ? lnk(r.proof[0], r.proof[1]) : '尚无验证项')}</dd>
+        ${ecn ? `<dt>设计变更</dt><dd>${lnk('ecn:' + ecn.id, ecn.id)} ${ecn.title}</dd>` : ''}${iss ? `<dt>遗留问题</dt><dd>${iss.id} ${iss.title}：${iss.note}（${iss.due}）</dd>` : ''}</dl></div>` : ''}</div>`; }).join('')}</div>`).join('');
+}
+// extra rows in an opened test: which requirements it proves, how it was run, and the change it triggered or re-verified
+function traceRowsHTML(v){
+  const rs = reqsOfTest(v.id), d = DVP[v.id], c = ecnOfTest(v.id), re = ECNS.filter(e => e.from !== v.id && e.tests.some(t => t[0] === v.id));
+  return `${rs.length ? `<dt>对应需求</dt><dd>${rs.map(r => lnk('req:' + r.id, r.id, r.name)).join(' ')}</dd>` : ''}${d ? `<dt>试验类型</dt><dd>${d[2]} · ${d[0]} · 样件：${d[1]}</dd>` : ''}
+    ${c ? `<dt>变更闭环</dt><dd><div class="pipe"><span>发现问题</span><em>→</em><span>${c.id} 发布</span><em>→</em><span>影响 ${c.parts.length} 个零件、${c.stations.length} 个工位</span><em>→</em><span>${c.tests[0][1]}</span><em>→</em><span>${c.open ? '耐久跟踪中' : '已关闭'}</span></div><div style="margin-top:6px">${lnk('ecn:' + c.id, '查看变更贯通 →')}</div></dd>` : ''}
+    ${re.length ? `<dt>关联变更</dt><dd>${re.map(e => lnk('ecn:' + e.id, e.id) + ' ' + e.tests.find(t => t[0] === v.id)[1]).join('<br>')}</dd>` : ''}`;
+}
+function dvpTableHTML(){
+  return `<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>编号</th><th>试验项目</th><th>对应需求</th><th>阶段 · 类型</th><th>结论</th></tr></thead><tbody>${VAL.map(v => { const c = ecnOfTest(v.id);
+    return `<tr><td>${lnk('val:' + v.id, v.id)}</td><td>${v.name}<small>样件：${DVP[v.id][1]}</small></td><td>${reqsOfTest(v.id).map(r => lnk('req:' + r.id, r.id, r.name)).join(' ')}</td><td>${DVP[v.id][2]} · ${DVP[v.id][0]}</td>
+      <td><span class="pill ${c ? (c.open ? 'warn' : 'ok') : v.st}">${c ? (c.open ? '变更后通过 · 跟踪' : '变更后通过') : v.label}</span></td></tr>`; }).join('')}</tbody></table></div>`;
+}
+// impact chain of one change: trigger -> requirement -> parts -> re-verification -> stations
+function threadSVG(c){
+  const uniq = [...new Map(c.parts.map(id => { const p = partById(id); return [p.name.replace(/（.*）/, ''), p]; })).entries()];
+  const cols = [
+    ['触发', [[testRef(c.from), c.from, testById(c.from).name]]],
+    ['需求', c.reqs.map(id => ['req:' + id, id, REQS.find(r => r.id === id).name])],
+    ['零件 / BOM', uniq.map(([n, p]) => ['part:' + p.id, p.sys, n])],
+    ['复验 / 检测', c.tests.map(([id]) => [testRef(id), id, testById(id).name])],
+    ['工位 / 工艺', c.stations.map(([id]) => ['stn:' + id, id, STATIONS.find(s => s.id === id).name])] ];
+  const W = 520, cw = 92, gap = (W - cw*5)/4, nh = 34, vg = 8, top = 24, rows = Math.max(...cols.map(k => k[1].length)), H = top + rows*(nh + vg);
+  const ny = (n, i) => top + (rows - n)*(nh + vg)/2 + i*(nh + vg);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${c.id} 变更影响链">`;
+  cols.forEach(([title, nodes], k) => { const x = k*(cw + gap);
+    s += `<text x="${x + cw/2}" y="12" text-anchor="middle" style="font-size:9px;font-weight:700;fill:var(--muted)">${title}</text>`;
+    if (k < 4) nodes.forEach((_, i) => cols[k+1][1].forEach((__, j) => { const y1 = ny(nodes.length, i) + nh/2, y2 = ny(cols[k+1][1].length, j) + nh/2, x1 = x + cw, x2 = x + cw + gap, mx = (x1 + x2)/2;
+      s += `<path d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" fill="none" style="stroke:var(--accent)" stroke-width="1.4" opacity=".6"/>`; })); });
+  cols.forEach(([, nodes], k) => nodes.forEach(([ref, id, name], i) => { const x = k*(cw + gap), y = ny(nodes.length, i);
+    s += `<g class="stn sel" data-go="${ref}" tabindex="0" role="button" aria-label="${id} ${name}"><rect x="${x}" y="${y}" width="${cw}" height="${nh}" rx="4"/><text x="${x + 5}" y="${y + 12}" class="sid">${id}</text><text x="${x + 5}" y="${y + 26}">${name.length > 9 ? name.slice(0, 8) + '…' : name}</text></g>`; }));
+  return s + '</svg>';
+}
+function viewTR(){
+  const c = ecnCur(), names = [...new Set(c.parts.map(id => partById(id).name.replace(/（.*）/, '')))];
+  return `<div class="eyebrow">数字主线 · 变更贯通</div>
+  <h2>一项设计变更牵动的需求、零件、验证和工位</h2>
+  <p class="lede">验证中发现的问题不会只改一张图纸。选择一项变更，下面列出它从触发到关闭的全过程，左侧高亮受影响的零件。图中每个方块都可以点开。</p>
+  <div class="btnrow">${ECNS.map(e => `<button class="btn" data-ecn="${e.id}" aria-pressed="${e.id === c.id}">${e.id}</button>`).join('')}</div>
+  <div class="pcard" style="margin-top:12px"><h4>${c.id} · ${c.title}</h4>
+    <div class="meta">触发：${c.from} ${testById(c.from).name} · 质量 ${c.mass > 0 ? '+' : '−'}${Math.abs(c.mass)} kg · <span class="pill ${c.open ? 'warn' : 'ok'}">${c.open ? '已发布 · 耐久跟踪中' : '已关闭'}</span></div>
+    <p style="margin:8px 0 4px"><b>原因：</b>${c.why}</p><p style="margin:0"><b>变更内容：</b>${c.what}</p></div>
+  <h3>影响链</h3><div class="svgwrap">${threadSVG(c)}</div>
+  <h3>处理过程</h3>
+  <ol class="tline">${c.steps.map(([a, wk, txt], i) => `<li class="${c.open && i === c.steps.length - 1 ? 'run' : 'ok'}"><b>${a}</b><span class="num">${wk}</span><p>${txt}</p></li>`).join('')}</ol>
+  <h3>影响明细</h3>
+  <table class="spec"><tbody>
+    <tr><td>需求</td><td>${c.reqs.map(id => lnk('req:' + id, id) + ' ' + REQS.find(r => r.id === id).name).join('<br>')}</td></tr>
+    <tr><td>零件（${c.parts.length} 个）</td><td>${names.map(n => { const ps = c.parts.map(partById).filter(p => p.name.replace(/（.*）/, '') === n); return lnk('part:' + ps[0].id, n + (ps.length > 1 ? ' ×' + ps.length : '')); }).join(' ')}</td></tr>
+    <tr><td>复验与检测</td><td>${c.tests.map(([id, txt]) => lnk(testRef(id), id) + ' ' + txt).join('<br>')}</td></tr>
+    <tr><td>工位与工艺</td><td>${c.stations.map(([id, txt]) => lnk('stn:' + id, id) + ' ' + txt).join('<br>')}</td></tr>
+  </tbody></table>
+  <p class="disclaim">周次与数值为方案阶段的示意值。</p>`;
+}
+// follow a cross-reference: open the right gate with the referenced item selected
+function jump(ref){
+  const [k, id] = ref.split(':'), to = g => goGate(GATES.findIndex(x => x.id === g));
+  if (k === 'val') { st.valOpen = st.valViz = id; to('g2'); }
+  else if (k === 'eol') { st.eolOpen = st.eolViz = id; to('g6'); }
+  else if (k === 'req') { st.reqOpen = id; to('g0'); }
+  else if (k === 'ecn') { st.ecn = id; to('tr'); }
+  else if (k === 'stn') { st.selStation = id; to('g4'); }
+  else if (k === 'part') { st.selPart = id; st.explodeAnim = null; st.explode = Math.max(st.explode, .6); to('g3'); }
+  else if (k === 'gate') to(id);
+  if (k === 'val' || k === 'eol' || k === 'req') requestAnimationFrame(() => { const el = panel.querySelector('.vitem[data-open="true"]'); if (el) el.scrollIntoView({ block:'center' }); });
+}
+/* ---------------------------------------------------------------- BOM, DFMEA, control plan, ramp-up, vehicle records */
+const refLnk = ref => { const [k, id] = ref.split(':'); return lnk(ref, id); };
+function bomSummaryHTML(){
+  const tm = totalMass(), tc = totalCost(), cs = costBySys(), buy = parts.reduce((a, p) => a + (bomOf(p)[1] === '外购' ? bomOf(p)[3] : 0), 0);
+  return `<h3>质量与成本达成</h3>
+  <div class="kpis"><div class="kpi"><b class="num">${fmt(tm)}</b><span>整备质量 kg（目标 ≤ ${fmt(MASS_TARGET)}）</span></div><div class="kpi"><b class="num" style="color:var(--ok)">${MASS_TARGET - tm}</b><span>质量余量 kg</span></div>
+    <div class="kpi"><b class="num">${tc.toFixed(1)}</b><span>物料成本 万元（目标 ≤ ${COST_TARGET}）</span></div><div class="kpi"><b class="num">${Math.round(buy/tc*100)}%</b><span>外购件成本占比</span></div></div>
+  <h3>成本分配</h3>
+  <div class="massbar">${Object.entries(cs).map(([k, v]) => `<span title="${k} ${v.toFixed(1)} 万元" style="width:${v/tc*100}%;background:${SYS[k].css}"></span>`).join('')}<span title="其他 ${OTHER_COST} 万元" style="width:${OTHER_COST/tc*100}%;background:var(--line)"></span></div>
+  <div class="disclaim" style="margin-top:4px">合计 ${tc.toFixed(1)} 万元，含内饰、流体等其他 ${OTHER_COST.toFixed(1)} 万元。颜色与质量分配相同，鼠标悬停看各系统数值。</div>`;
+}
+// extra lines in the selected part's card: BOM attributes, changes that touched it, its DFMEA items
+function partExtraHTML(p){
+  const b = bomOf(p), ecns = ECNS.filter(c => c.parts.includes(p.id)), fm = DFMEA.filter(f => bomKey(f[0]) === bomKey(p.id));
+  return `<div class="meta" style="margin-top:8px">零件号 <span class="num">${pnOf(p)}</span> · ${b[1]} · ${b[2]} · 单件成本 ${b[3].toFixed(1)} 万元</div>
+    ${ecns.length ? `<div class="meta" style="margin-top:4px">设计变更：${ecns.map(c => lnk('ecn:' + c.id, c.id) + ' ' + c.title).join('；')}</div>` : ''}
+    ${fm.length ? `<div class="meta" style="margin-top:4px">失效风险：${fm.map(f => f[1] + '（' + f[7].map(refLnk).join(' ') + '）').join('；')}</div>` : ''}`;
+}
+function dfmeaHTML(){
+  return `<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>零件</th><th>失效模式与影响</th><th>S·O·D</th><th>优先级</th><th>措施与验证</th></tr></thead><tbody>${DFMEA.map(([id, mode, eff, S, O, D, act, refs]) => {
+    const p = partById(id), ap = S >= 9 && O >= 3 ? ['bad', '高'] : (S*O*D >= 80 ? ['warn', '中'] : ['ok', '低']);
+    return `<tr><td>${lnk('part:' + id, p.name.replace(/（.*）/, ''))}</td><td>${mode}<small>影响：${eff}</small></td><td class="num">${S}·${O}·${D}<small>RPN ${S*O*D}</small></td><td><span class="pill ${ap[0]}">${ap[1]}</span></td><td>${act}<small>${refs.map(refLnk).join(' ')} 已落实</small></td></tr>`; }).join('')}</tbody></table></div>
+  <p class="disclaim">S 严重度、O 发生度、D 探测度，1–10 分。优先级按严重度优先的原则划分：S ≥ 9 且 O ≥ 3 为高。</p>`;
+}
+function controlTableHTML(){
+  return `<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>工位</th><th>工序特性</th><th>规格</th><th>控制方法</th><th>等级</th></tr></thead><tbody>${CONTROL.map(([sid, ch, spec, how, cls]) =>
+    `<tr${sid === st.selStation ? ' style="background:var(--accent-soft)"' : ''}><td>${lnk('stn:' + sid, sid)}</td><td>${ch}</td><td class="num">${spec}</td><td>${how}</td><td><span class="pill ${cls === '安全' ? 'bad' : 'warn'}">${cls}</span></td></tr>`).join('')}</tbody></table></div>
+  <p class="disclaim">“安全”为安全特性，失效会直接危及人员；“关键”为关键特性，失效会影响功能或下线合格率。两类都要求 100% 监控并把数据绑定到车架号。</p>`;
+}
+function rampSVG(){
+  const W = 360, H = 190, l = 30, r = 34, t = 16, b = 26, n = RAMP.plan.length, bw = (W - l - r)/n, y = v => t + (H - t - b)*(1 - v/400), yf = v => t + (H - t - b)*(1 - (v - 50)/50), xc = i => l + i*bw + bw/2;
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="试生产爬坡：周产量与一次合格率">`;
+  [0, 100, 200, 300, 400].forEach(v => s += `<line class="grid" x1="${l}" x2="${W - r}" y1="${y(v)}" y2="${y(v)}"/><text x="${l - 4}" y="${y(v) + 3}" text-anchor="end">${v}</text><text x="${W - r + 4}" y="${y(v) + 3}">${50 + v/8}%</text>`);
+  RAMP.act.forEach((v, i) => s += `<rect class="bar" x="${l + i*bw + 3}" y="${y(v)}" width="${bw - 6}" height="${y(0) - y(v)}"><title>第 ${i + 1} 周：实际 ${v} 台 / 计划 ${RAMP.plan[i]} 台，FTT ${RAMP.ftt[i]}%</title></rect><text x="${xc(i)}" y="${H - 13}" text-anchor="middle">${i + 1}</text>`);
+  s += `<polyline points="${RAMP.plan.map((v, i) => `${xc(i)},${y(v)}`).join(' ')}" fill="none" style="stroke:var(--muted)" stroke-width="1.3" stroke-dasharray="3 3"/>`;
+  s += `<line class="takt" x1="${l}" x2="${W - r}" y1="${yf(RAMP.target)}" y2="${yf(RAMP.target)}"/><text x="${l + 4}" y="${yf(RAMP.target) - 4}" style="fill:var(--bad)">FTT 目标 ${RAMP.target}%</text>`;
+  s += `<polyline points="${RAMP.ftt.map((v, i) => `${xc(i)},${yf(v)}`).join(' ')}" fill="none" style="stroke:var(--accent)" stroke-width="2"/>` + RAMP.ftt.map((v, i) => `<circle cx="${xc(i)}" cy="${yf(v)}" r="2.2" style="fill:var(--accent)"/>`).join('');
+  return s + `<text x="${l}" y="${H - 1}">试生产周</text><text x="2" y="${t - 5}">台/周</text><text x="${W - 2}" y="${t - 5}" text-anchor="end">FTT</text></svg>`;
+}
+function rampHTML(){
+  const n = RAMP.act.length, sum = RAMP.act.reduce((a, v) => a + v, 0), last = RAMP.act[n - 1], ftt = RAMP.ftt[n - 1], hit = RAMP.ftt.findIndex(v => v >= RAMP.target) + 1, mx = Math.max(...RAMP.pareto.map(p => p[1]));
+  return `<h3>产能爬坡与一次合格率</h3>
+  <div class="kpis"><div class="kpi"><b class="num">${last}</b><span>第 ${n} 周产量（台，设计 400）</span></div><div class="kpi"><b class="num" style="color:var(--ok)">${ftt}%</b><span>一次合格率（目标 ≥ ${RAMP.target}%）</span></div>
+    <div class="kpi"><b class="num">${fmt(sum)}</b><span>累计下线（台）</span></div><div class="kpi"><b class="num">第 ${hit} 周</b><span>合格率达标</span></div></div>
+  <div class="svgwrap" style="margin-top:8px">${rampSVG()}</div>
+  <div class="disclaim" style="margin-top:4px">蓝色柱为每周实际产量，灰色虚线为计划，橙色线为一次合格率（FTT：下线检测一次通过、不返修的比例）。</div>
+  <h3>不合格原因分布（爬坡期累计）</h3>
+  <div style="display:grid;gap:5px">${RAMP.pareto.map(([k, v]) => `<div style="display:grid;grid-template-columns:118px minmax(0,1fr) 38px;gap:8px;align-items:center;font-size:12.5px"><span>${k}</span><div style="height:10px;background:var(--bg);border-radius:2px"><div style="height:100%;width:${v/mx*100}%;background:var(--cyan);border-radius:2px"></div></div><span class="num" style="text-align:right">${v}%</span></div>`).join('')}</div>
+  <p class="disclaim">前两项与 ${lnk('stn:ST20', 'ST20')} 高压插件二次锁止、${lnk('stn:ST60', 'ST60')} 座舱合装有关，已纳入控制计划（见 G4）。</p>`;
+}
+function vehiclesHTML(){
+  const recs = VEH_NOS.map(vehRec), cur = recs.find(r => r.n === st.vin) || recs[0], vin = r => `${carName()}-${r.no}`;
+  return `<h3>单车检测记录与追溯</h3>
+  <p class="disclaim" style="margin:0 0 6px">每台车按车架号保存下线检测结果、返修记录和关键件序列号。选择一台车查看。</p>
+  <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>车架号</th><th>班次</th><th>8 项检测</th><th>一次通过</th></tr></thead><tbody>${recs.map(r =>
+    `<tr${r === cur ? ' style="background:var(--accent-soft)"' : ''}><td><button class="lnk" data-vin="${r.n}" aria-pressed="${r === cur}">${vin(r)}</button></td><td>${r.shift}</td>
+      <td><span class="bins">${EOL.map(e => `<i class="f" title="${e.id} ${e.name}" style="background:var(--${r.rework && r.rework[0] === e.id ? 'warn' : 'ok'})"></i>`).join('')}</span></td>
+      <td><span class="pill ${r.rework ? 'warn' : 'ok'}">${r.rework ? '返修后通过' : '是'}</span></td></tr>`).join('')}</tbody></table></div>
+  <div class="pcard" style="margin-top:12px"><h4>${vin(cur)}</h4><div class="meta">${cur.shift}下线 · 变更状态：${ECNS.map(c => c.id).join(' / ')} 已实施${cur.rework ? ` · 返修 1 次` : ' · 无返修'}</div>
+    ${cur.rework ? `<p style="margin:6px 0 0"><b>返修记录：</b>${lnk('eol:' + cur.rework[0], cur.rework[0])} ${cur.rework[1]}</p>` : ''}</div>
+  <div style="overflow-x:auto;margin-top:8px"><table class="tbl"><thead><tr><th>检测项</th><th>实测值</th><th>判定</th></tr></thead><tbody>${EOL.map(e =>
+    `<tr><td>${lnk('eol:' + e.id, e.id)} ${e.name}</td><td class="num">${cur.vals[e.id]}</td><td><span class="pill ${cur.rework && cur.rework[0] === e.id ? 'warn' : 'ok'}">${cur.rework && cur.rework[0] === e.id ? '复检通过' : '通过'}</span></td></tr>`).join('')}</tbody></table></div>
+  <div style="overflow-x:auto;margin-top:8px"><table class="tbl"><thead><tr><th>关键件</th><th>序列号 / 批次</th><th>装配工位</th><th>过程数据</th></tr></thead><tbody>${cur.trace.map(([pid, nm, sn, sid, data]) =>
+    `<tr><td>${lnk('part:' + pid, nm)}</td><td class="num">${sn}</td><td>${lnk('stn:' + sid, sid)}</td><td>${data}</td></tr>`).join('')}</tbody></table></div>`;
+}
+const VIEWS = { tr:viewTR, g0:viewG0, g1:viewG1, g2:viewG2, g3:viewG3, g4:viewG4, g5:viewG5, g6:viewG6 };
 // key deliverables per gate, matching the deck's gate table
 const DELIV = {
-  g0:['市场与任务定位','目标成本与关键指标','技术路线','项目立项'],
+  g0:['市场与任务定位','整车需求清单（18 条）','技术路线','项目立项'],
   g1:['四视角概念图','Hi3D 整车 3D 模型','总布置','造型冻结'],
-  g3:['3D 数据冻结','工程 BOM（17 类 / 30 总成）','质量分配','供应商定点（13 个零件 3D）'],
-  g2:['样车验证 10 项','DV / PV 试验结论','设计变更 1 项、整改 2 项','法规与安全评估'],
-  g4:['工位与节拍（675 s）','线平衡','人机分工','工装与设备清单'],
-  g5:['数字孪生试生产','工序与物料补给验证','质量爬坡','零部件批准（PPAP）'],
-  g6:['8 项 EOL 下线检测','合格证与追溯记录','SOP 量产','交付'] };
-function delivHTML(id){ return `<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px"><span style="font-size:12px;color:var(--muted);align-self:center">本阶段关键交付物</span>${(DELIV[id]||[]).map(d => `<span class="chip" style="color:var(--ink)">${d}</span>`).join('')}</div>`; }
+  g3:['3D 数据冻结','工程 BOM（零件号 / 成本 / 质量）','DFMEA 高风险项关闭','供应商定点'],
+  g2:['验证计划与报告（DVP&R）9 项','DV / PV 试验结论','设计变更 3 项（均已发布）','法规与安全评估'],
+  g4:['工位与节拍（675 s）','线平衡与人机分工','关键工序控制计划','工装与设备清单'],
+  g5:['数字孪生试生产','工序与物料补给验证','产能爬坡与一次合格率','零部件批准（PPAP）'],
+  g6:['8 项 EOL 下线检测','单车检测记录与追溯','SOP 量产','交付'] };
+function delivHTML(id){ if (!DELIV[id]) return ''; return `<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px"><span style="font-size:12px;color:var(--muted);align-self:center">本阶段关键交付物</span>${(DELIV[id]||[]).map(d => `<span class="chip" style="color:var(--ink)">${d}</span>`).join('')}</div>`; }
 function renderPanel(){ panel.innerHTML = delivHTML(gid()) + VIEWS[gid()](); lcardFor = -1; vizUi(true); }
-function renderGates(){ $('#gates').innerHTML = GATES.map((g,i) => `<button class="gate ${i<st.gate?'done':''}" data-gate="${i}" ${i===st.gate?'aria-current="step"':''}><span class="code">${g.code} · ${g.ph}</span><span class="nm">${g.name}</span></button>`).join(''); }
+function renderGates(){ $('#gates').innerHTML = GATES.map((g,i) => `<button class="gate ${REVIEW[g.id] ? (REVIEW[g.id].st === 'ok' ? 'done' : 'cond') : ''}" data-gate="${i}" ${i===st.gate?'aria-current="step"':''}><span class="code">${g.code} · ${g.ph}</span><span class="nm">${g.name}</span></button>`).join(''); }
 
 /* ================================================================ events */
 let camTarget = null, focusTarget = null;
@@ -2063,13 +2611,20 @@ function goGate(i, fromHash){
   panel.scrollTop = 0;
   const g = gid(); const vz = curViz();
   if (g === 'g5') { LINE.t = 0; LINE.play = true; camTarget = null; focusTarget = null; const ls = lineState(LINE.t); controls.target.set(ls.carX, 1.2, 0); camera.position.set(ls.carX + 9, 7.5, 12); }
-  else { camTarget = new THREE.Vector3(...((vz && VIZ[vz].cam) || { g3:[14,9.5,16], g4:[10,7,10] }[g] || [9.5,4.6,9.5]));
-    focusTarget = new THREE.Vector3(0, g === 'g3' ? 2.0 : (vz === 'V8' ? 2.2 : 1.1), 0); }
+  else { camTarget = new THREE.Vector3(...((vz && VIZ[vz].cam) || { g3:[14,9.5,16], tr:[14,9.5,16], g4:[10,7,10] }[g] || [9.5,4.6,9.5]));
+    focusTarget = new THREE.Vector3(0, g === 'g3' || g === 'tr' ? 2.0 : (vz === 'V8' ? 2.2 : 1.1), 0); }
 }
 $('#gates').addEventListener('click', e => { const b = e.target.closest('[data-gate]'); if (b) goGate(+b.dataset.gate); });
 panel.addEventListener('click', e => {
-  const t = e.target.closest('[data-gal],[data-test],[data-vplay],[data-part],[data-exp],[data-stn],[data-line],[data-speed],[data-jump]'); if (!t) return;
-  if (t.dataset.gal) { st.galleryIdx = +t.dataset.gal; renderPanel(); }
+  const t = e.target.closest('[data-go],[data-req],[data-ecn],[data-vin],[data-panel],[data-env],[data-lamp],[data-gal],[data-test],[data-vplay],[data-part],[data-exp],[data-stn],[data-line],[data-speed],[data-jump]'); if (!t) return;
+  if (t.dataset.go) jump(t.dataset.go);
+  else if (t.dataset.req) { st.reqOpen = st.reqOpen === t.dataset.req ? null : t.dataset.req; renderPanel(); }
+  else if (t.dataset.ecn) { st.ecn = t.dataset.ecn; applyGate(); }
+  else if (t.dataset.vin) { st.vin = +t.dataset.vin; renderPanel(); }
+  else if (t.dataset.panel) { const id = t.dataset.panel; if (id === 'all') { const v = !anyOpen(); PANELS.forEach(p => st.open[p.id] = v); } else st.open[id] = !st.open[id]; applyGate(); }
+  else if (t.dataset.env) { st.env = t.dataset.env; st.lamps = null; applyGate(); }
+  else if (t.dataset.lamp) { st.lamps = !lampsOn(); applyGate(); }
+  else if (t.dataset.gal) { st.galleryIdx = +t.dataset.gal; renderPanel(); }
   else if (t.dataset.test) { const ts = testSet(); const id = t.dataset.test;
     st[ts.open] = (st[ts.open] === id && st[ts.key] === id) ? null : id;
     if (st[ts.key] !== id) { st[ts.key] = id; camTarget = new THREE.Vector3(...VIZ[id].cam); focusTarget = new THREE.Vector3(0, id === 'V8' ? 2.2 : 1.1, 0); }
@@ -2088,24 +2643,43 @@ panel.addEventListener('click', e => {
 });
 panel.addEventListener('keydown', e => { if ((e.key==='Enter'||e.key===' ') && e.target.matches('.stn')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click',{bubbles:true})); } });
 panel.addEventListener('input', e => { if (e.target.id === 'explode') { st.explodeAnim = null; st.explode = e.target.value/100; $('#expv').textContent = e.target.value + '%'; } });
+$('#stagebar').addEventListener('click', e => { const t = e.target.closest('[data-env],[data-lamp]'); if (!t) return; if (t.dataset.env) { st.env = t.dataset.env; st.lamps = null; } else st.lamps = !lampsOn(); applyGate(); });
 labelsEl.addEventListener('click', e => { const l = e.target.closest('[data-lbl]'); if (l) { st.selPart = l.dataset.lbl; applyGate(); } });
 
 const ray = new THREE.Raycaster(), ptr = new THREE.Vector2(); const tip = $('#tip');
 function pick(ev){ const r = renderer.domElement.getBoundingClientRect(); ptr.set(((ev.clientX-r.left)/r.width)*2-1, -((ev.clientY-r.top)/r.height)*2+1); ray.setFromCamera(ptr, camera);
   const hits = ray.intersectObjects(parts.filter(p => p.obj.visible && p.id !== 'body').map(p => p.obj), true); return hits.length ? partById(hits[0].object.userData.partId) : null; }
 renderer.domElement.addEventListener('pointermove', ev => {
-  const g = gid(); if (!(g === 'g3' || g === 'g4')) { tip.hidden = true; return; }
+  const g = gid();
+  if (g === 'g1') { const o = pickPanel(ev); renderer.domElement.style.cursor = o ? 'pointer' : ''; if (!o) { tip.hidden = true; return; }
+    const r = stageEl.getBoundingClientRect(); tip.innerHTML = `<b>${o.def.name}</b>点击${st.open[o.def.id] ? '关闭' : '打开'}`; tip.hidden = false; tip.style.left = Math.min(ev.clientX - r.left + 14, r.width - 250) + 'px'; tip.style.top = (ev.clientY - r.top + 14) + 'px'; return; }
+  if (!(g === 'g3' || g === 'g4')) { tip.hidden = true; return; }
   const p = pick(ev); if (!p) { tip.hidden = true; renderer.domElement.style.cursor = ''; return; }
   const r = stageEl.getBoundingClientRect(); tip.innerHTML = `<b>${p.name}</b>${p.sys} · ${p.st} · ${fmt(p.mass)} kg`;
   tip.hidden = false; tip.style.left = Math.min(ev.clientX - r.left + 14, r.width - 250) + 'px'; tip.style.top = (ev.clientY - r.top + 14) + 'px'; renderer.domElement.style.cursor = 'pointer'; });
 renderer.domElement.addEventListener('pointerleave', () => tip.hidden = true);
 let downAt = null;
 renderer.domElement.addEventListener('pointerdown', ev => { downAt = [ev.clientX, ev.clientY]; if (st.explodeAnim) { st.explodeAnim = null; controls.autoRotate = false; } });
-renderer.domElement.addEventListener('pointerup', ev => { if (!downAt || Math.hypot(ev.clientX-downAt[0], ev.clientY-downAt[1]) > 5) return; const g = gid(); if (g !== 'g3' && g !== 'g4') return;
+renderer.domElement.addEventListener('pointerup', ev => { if (!downAt || Math.hypot(ev.clientX-downAt[0], ev.clientY-downAt[1]) > 5) return; const g = gid();
+  if (g === 'g1') { const o = pickPanel(ev); if (o) { st.open[o.def.id] = !st.open[o.def.id]; applyGate(); } return; }
+  if (g !== 'g3' && g !== 'g4') return;
   const p = pick(ev); if (!p) return; if (g === 'g3') st.selPart = p.id; else st.selStation = p.st; applyGate(); });
 
 // upload a new vehicle
 const modal = $('#modal');
+// experience mode: camera + pose driving, loaded on demand (experience.js)
+function buildXpCar(){
+  const group = new THREE.Group(), wheels = [];
+  const add = p => { const c = p.obj.clone(true); c.position.copy(p.home); c.rotation.set(0,0,0); group.add(c); return c; };
+  add(bodyPart);
+  parts.filter(p => p.isWheel).forEach(p => { const i = p.obj.children.indexOf(p.spin), c = add(p); if (c.children[i]) c.children[i].rotation.set(0,0,0); wheels.push({ obj:c, spin:c.children[i], r:p.rw || WHEEL_R, front:p.home.x > 1, home:p.home.clone() }); });
+  // own materials, so gate highlights and fades on the main stage never leak into the drive
+  group.traverse(o => { if (!o.userData.proc) o.visible = true; if (!o.material) return; const b = o.material.userData.base; o.material = o.material.clone(); o.material.transparent = false; o.material.opacity = 1; o.material.depthWrite = true;
+    if (b && b.emissive && o.material.emissive) { o.material.emissive.copy(b.emissive); o.material.emissiveIntensity = b.ei; } });
+  return { group, wheels };
+}
+$('#openXp').addEventListener('click', async e => { const btn = e.currentTarget; btn.disabled = true;
+  try { const m = await import('./experience.js'); await m.openExperience({ buildCar:buildXpCar }); } catch (err) { console.warn('experience mode', err); alert('体验模式加载失败：' + err.message); } finally { btn.disabled = false; } });
 $('#openUpload').addEventListener('click', () => { modal.hidden = false; $('#upMsg').textContent = ''; });
 $('#upCancel').addEventListener('click', () => modal.hidden = true);
 modal.addEventListener('click', e => { if (e.target === modal) modal.hidden = true; });
@@ -2116,7 +2690,7 @@ $('#uploadForm').addEventListener('submit', async e => {
   if (name) { st.carName = name; const m = name.match(/^(.*?)(-?\d+)$/); $('#brandName').innerHTML = m ? `${m[1]}<b>${m[2]}</b>` : name; document.title = name; }
   if (imgs.length) { const labels = ['斜前 45°','正前','侧面','正后']; st.gallery = imgs.slice(0,8).map((f,i) => [URL.createObjectURL(f), labels[i] || `视图 ${i+1}`]); st.galleryIdx = 0; }
   if (glb) { msg.textContent = `正在读取 ${glb.name}（${fmt1(glb.size/1048576,1)} MB）…`;
-    try { const buf = await glb.arrayBuffer(); clearHi3d(); hi3dState = 'loading'; await loadGlb(buf, { flip }); msg.textContent = '已加载新模型。'; }
+    try { const buf = await glb.arrayBuffer(); clearHi3d(); hi3dState = 'loading'; await loadGlb(buf, { flip, custom:true }); msg.textContent = '已加载新模型。'; }
     catch (err) { msg.textContent = '模型解析失败：请确认是 .glb 文件。'; hi3dState = hi3d ? 'ok' : 'missing'; return; } }
   modal.hidden = true; applyGate();
 });
@@ -2147,6 +2721,7 @@ function adaptResolution(dt){
   if (next !== pixelRatio && document.visibilityState === 'visible') { pixelRatio = next; renderer.setPixelRatio(pixelRatio); resize(); }
 }
 function loop(){
+  if (window.__xpActive) { clock.getDelta(); return requestAnimationFrame(loop); }   // experience mode owns the screen: pause the main stage
   const dt = Math.min(clock.getDelta(), .25); const g = gid();
   adaptResolution(dt);
   if (camTarget) { camera.position.lerp(camTarget, 1 - Math.pow(.02, dt)); if (camera.position.distanceTo(camTarget) < .05) camTarget = null; }
@@ -2154,12 +2729,13 @@ function loop(){
   // exploded view (with demo sequence)
   if (st.explodeAnim) { const a = st.explodeAnim; a.t += dt; const T = a.t % 15;
     st.explode = T < 6 ? ease(T/6) : (T < 9 ? 1 : (T < 13 ? 1 - ease((T-9)/4) : 0)); const ev = $('#explode'); if (ev) { ev.value = Math.round(st.explode*100); $('#expv').textContent = ev.value + '%'; } }
-  const wantExp = g === 'g3' ? st.explode : 0;
+  const wantExp = g === 'g3' ? st.explode : (g === 'tr' ? .55 : 0);
   st.explodeShown += (wantExp - st.explodeShown) * (st.explodeAnim ? 1 : (1 - Math.pow(.002, dt)));
-  st.lift += ((g === 'g3' ? clamp(st.explodeShown/.6,0,1)*1.4 : 0) - st.lift) * (1 - Math.pow(.002, dt));
+  st.lift += ((g === 'g3' || g === 'tr' ? clamp(st.explodeShown/.6,0,1)*1.4 : 0) - st.lift) * (1 - Math.pow(.002, dt));
   let ls = null;
   if (g === 'g5') { applyExplode(0); ls = updateLine(dt); lineUi(ls); }
   else applyExplode(st.explodeShown);
+  stepPanels(dt); stepEnvFx(dt); stepGlow(dt);
   if (st.vizOn) { const z = VIZ[st.vizOn];
     if (st.vplay) { st.vt += dt; if (st.vt > z.dur + 2.5) { st.vt = 0; resetRig(); } }
     const u = clamp(st.vt / z.dur, 0, 1);

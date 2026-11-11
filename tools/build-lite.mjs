@@ -40,6 +40,8 @@ const addDir = (dir, tris, tex, def) => {
 addDir('parts', PART_TRIS, PART_TEX, 120000);
 addDir('scene', SCENE_TRIS, SCENE_TEX, 120000);
 addDir('line', LINE_TRIS, LINE_TEX, 40000);
+const G1_TRIS = { interior:250000, door:100000, hood:100000, deck:60000, headlamp:60000, tailbar:40000 }, G1_TEX = { interior:2048, door:2048, hood:2048, deck:1024, headlamp:1024, tailbar:1024 };
+if (fs.existsSync(path.join(SITE, 'g1', 'manifest.json'))) addDir('g1', G1_TRIS, G1_TEX, 80000);
 
 const only = process.env.ONLY ? new RegExp(process.env.ONLY) : null;
 await MeshoptSimplifier.ready; await MeshoptDecoder.ready;
