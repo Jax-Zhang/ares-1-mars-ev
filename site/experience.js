@@ -252,86 +252,60 @@ export async function openExperience(opts = {}){
   }
 
   /* ------------------------------------------------------------ helmet + suit overlay */
-  // A small 3D scene drawn over the camera picture: pressure helmet and EVA driving suit with physically based materials,
-  // lit from the same side as the Mars sun. Pixel space: x right, y up (so y = -pixel y), +z towards the viewer.
-  const arR = new THREE.WebGLRenderer({ antialias:true, alpha:true }); arR.setPixelRatio(1); arR.outputColorSpace = THREE.SRGBColorSpace; arR.toneMapping = THREE.ACESFilmicToneMapping; arR.setClearColor(0x000000, 0);
-  const arS = new THREE.Scene(), arPm = new THREE.PMREMGenerator(arR); arS.environment = arPm.fromScene(new RoomEnvironment(arR), .04).texture;
-  arS.add(new THREE.HemisphereLight(0xfff0e0, 0x5a3a2a, .7)); const arSun = new THREE.DirectionalLight(0xfff4e6, 2.6); arSun.position.set(-.6, .8, 1); arS.add(arSun);
-  const arC = new THREE.OrthographicCamera(0, 640, 0, -480, .1, 4000); arC.position.z = 2000; let arW = 0, arH = 0;
-  const ctex = (w, h, draw, rep) => { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; if (rep) { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(...rep); } return t; };
-  const weave = ctex(256, 256, (g, w, h) => { g.fillStyle = '#e6e3dc'; g.fillRect(0, 0, w, h); for (let y=0;y<h;y+=4) for (let xx=0;xx<w;xx+=4){ const v = 205 + Math.random()*40|0; g.fillStyle = 'rgb(' + v + ',' + (v-2) + ',' + (v-8) + ')'; g.fillRect(xx + ((y/4)%2)*2, y, 3, 3); }
-    g.strokeStyle = 'rgba(90,84,74,.5)'; g.lineWidth = 2; g.setLineDash([7, 5]); [40, 216].forEach(xx => { g.beginPath(); g.moveTo(xx, 0); g.lineTo(xx, h); g.stroke(); }); }, [3, 3]);
-  const A = {
-    fabric: new THREE.MeshStandardMaterial({ color:0xf1efe9, map:weave, bumpMap:weave, bumpScale:1.2, roughness:.93, metalness:0 }),
-    shell:  new THREE.MeshPhysicalMaterial({ color:0xf3f4f5, roughness:.32, metalness:.05, clearcoat:.7, clearcoatRoughness:.25 }),
-    steel:  new THREE.MeshStandardMaterial({ color:0xd3d8dd, metalness:1, roughness:.26 }),
-    dark:   new THREE.MeshStandardMaterial({ color:0x262a30, metalness:.45, roughness:.55 }),
-    orange: new THREE.MeshStandardMaterial({ color:0xe2701c, metalness:.2, roughness:.5 }),
-    glass:  new THREE.MeshStandardMaterial({ color:0xa9c9e6, metalness:1, roughness:.03, transparent:true, opacity:.2, depthWrite:false }),
-    gold:   new THREE.MeshStandardMaterial({ color:0xdba63a, metalness:1, roughness:.1, transparent:true, opacity:.86 }),
-    led:    new THREE.MeshBasicMaterial({ color:0x58b8ff }), lamp: new THREE.MeshBasicMaterial({ color:0xfdfaf0 }),
-  };
-  const add = (par, geo, m, px = 0, py = 0, pz = 0) => { const o = new THREE.Mesh(geo, m); o.position.set(px, py, pz); par.add(o); return o; };
-  // helmet, unit radius, opening faces +z
-  const OPEN = .9, helmet = new THREE.Group(); helmet.rotation.order = 'ZYX'; arS.add(helmet);
-  add(helmet, new THREE.SphereGeometry(1, 56, 36, 0, Math.PI*2, OPEN, Math.PI - OPEN).rotateX(Math.PI/2), A.shell);
-  add(helmet, new THREE.TorusGeometry(Math.sin(OPEN), .05, 14, 72), A.steel, 0, 0, Math.cos(OPEN));
-  add(helmet, new THREE.SphereGeometry(.985, 56, 20, 0, Math.PI*2, 0, OPEN).rotateX(Math.PI/2), A.glass).renderOrder = 2;
-  const visor = add(helmet, new THREE.SphereGeometry(1.03, 56, 16, 0, Math.PI*2, 0, OPEN + .06).rotateX(Math.PI/2), A.gold); visor.rotation.x = -1.28;     // gold sun visor, raised
-  add(helmet, new THREE.TorusGeometry(Math.sin(OPEN) + .075, .028, 10, 72), A.orange, 0, 0, Math.cos(OPEN) - .04);                            // crest stripe over the top
-  [-1, 1].forEach(s => { add(helmet, new THREE.BoxGeometry(.2, .42, .36), A.dark, s*.98, -.08, .12); add(helmet, new THREE.BoxGeometry(.03, .26, .05), A.led, s*1.085, -.08, .25);
-    add(helmet, new THREE.CylinderGeometry(.09, .1, .16, 16).rotateX(Math.PI/2), A.steel, s*.62, .78, .34); add(helmet, new THREE.CircleGeometry(.075, 16), A.lamp, s*.62, .78, .425);
-    add(helmet, new THREE.CylinderGeometry(.045, .045, .1, 12).rotateZ(Math.PI/2), A.steel, s*.8, 0, .6); });
-  add(helmet, new THREE.CylinderGeometry(.012, .012, .5, 6), A.steel, .98, .36, 0);
-  add(helmet, new THREE.TorusGeometry(.8, .1, 14, 56).rotateX(Math.PI/2), A.steel, 0, -.93, 0);
-  add(helmet, new THREE.CylinderGeometry(.84, 1.0, .26, 40, 1, true), A.dark, 0, -1.1, 0);
-  [-.5, 0, .5].forEach(a => add(helmet, new THREE.BoxGeometry(.16, .09, .08), A.orange, Math.sin(a)*.86, -.93, Math.cos(a)*.86).rotation.y = a);
-  // torso, unit = shoulder width, origin at the middle of the shoulders
-  const torso = new THREE.Group(); arS.add(torso); const body = new THREE.Group(); torso.add(body);
-  { const s = new THREE.Shape(); s.moveTo(-.7, .06); s.quadraticCurveTo(-.5, .24, -.26, .2); s.quadraticCurveTo(0, .1, .26, .2); s.quadraticCurveTo(.5, .24, .7, .06); s.quadraticCurveTo(.66, -.5, .56, -1); s.lineTo(-.56, -1); s.quadraticCurveTo(-.66, -.5, -.7, .06);
-    const g = new THREE.ExtrudeGeometry(s, { depth:.3, bevelEnabled:true, bevelSize:.07, bevelThickness:.12, bevelSegments:5, curveSegments:16 }); g.translate(0, 0, -.42); add(body, g, A.fabric); }
-  const label = ctex(256, 96, (g, w, h) => { g.fillStyle = '#c9ced3'; g.fillRect(0, 0, w, h); g.fillStyle = '#1a2026'; g.font = '700 54px "Barlow Condensed",sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('ARES-1', w/2, 42); g.font = '600 15px monospace'; g.fillText('MARS SURFACE CREW', w/2, 80); });
-  const disp = ctex(128, 64, (g, w, h) => { g.fillStyle = '#04121c'; g.fillRect(0, 0, w, h); g.fillStyle = '#58b8ff'; g.font = '600 15px monospace'; g.fillText('O2 98%', 8, 20); g.fillText('SUIT 34.5 kPa', 8, 40); g.fillStyle = '#5bbf7a'; g.fillRect(8, 48, 90, 6); });
-  const patch = ctex(128, 128, (g, w) => { g.fillStyle = '#17202a'; g.beginPath(); g.arc(64, 64, 62, 0, 7); g.fill(); g.strokeStyle = '#e2701c'; g.lineWidth = 6; g.stroke(); g.fillStyle = '#c45516'; g.beginPath(); g.arc(64, 70, 30, 0, 7); g.fill(); g.fillStyle = '#e8ecef'; g.font = '700 20px sans-serif'; g.textAlign = 'center'; g.fillText('ARES', 64, 30); });
-  const packM = new THREE.MeshStandardMaterial({ color:0x2b3036, metalness:.5, roughness:.5 });
-  add(body, new THREE.BoxGeometry(.5, .34, .14), packM, 0, -.4, .08); add(body, new THREE.BoxGeometry(.52, .03, .15), A.steel, 0, -.225, .08);
-  add(body, new THREE.PlaneGeometry(.2, .1), new THREE.MeshBasicMaterial({ map:disp }), -.11, -.34, .152); add(body, new THREE.PlaneGeometry(.26, .1), new THREE.MeshStandardMaterial({ map:label, metalness:.8, roughness:.4 }), 0, -.49, .152);
-  [[.08, A.orange], [.15, A.led], [.22, A.steel]].forEach(([bxp, m]) => add(body, new THREE.CylinderGeometry(.022, .022, .03, 12).rotateX(Math.PI/2), m, bxp, -.34, .155));
-  add(body, new THREE.CircleGeometry(.085, 24), new THREE.MeshStandardMaterial({ map:patch, roughness:.8 }), .36, -.12, .04);
-  [-1, 1].forEach(s => { const strap = add(body, new THREE.BoxGeometry(.085, 1.0, .03), A.dark, s*.3, -.42, .035); strap.rotation.z = s*.1; add(body, new THREE.BoxGeometry(.03, 1.0, .032), A.orange, s*.3, -.42, .037).rotation.z = s*.1;
-    add(body, new THREE.BoxGeometry(.11, .07, .05), A.steel, s*.27, -.08, .05);
-    const hose = new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(s*.2, -.24, .12), new THREE.Vector3(s*.3, -.05, .2), new THREE.Vector3(s*.26, .14, .16), new THREE.Vector3(s*.16, .22, .05)]), 24, .028, 10); add(body, hose, A.dark);
-    add(body, new THREE.TorusGeometry(.2, .04, 12, 36), A.steel, s*.62, -.02, -.12).rotation.y = s*1.0; });
-  add(body, new THREE.BoxGeometry(1.2, .1, .5), A.dark, 0, -.86, -.2); add(body, new THREE.BoxGeometry(.16, .12, .06), A.steel, 0, -.86, .07);
-  // arms: two fabric segments, bearing rings, glove
-  const cyl = new THREE.CylinderGeometry(1, 1, 1, 24), ball = new THREE.SphereGeometry(1, 20, 14);
-  const mkArm = () => { const g = new THREE.Group(); arS.add(g); const o = { g, up:add(g, cyl, A.fabric), fore:add(g, cyl, A.fabric), elbow:add(g, ball, A.fabric), ring:add(g, cyl, A.steel), band:add(g, cyl, A.orange), glove:add(g, ball, A.fabric), palm:add(g, ball, A.dark) }; return o; };
-  const arms = [mkArm(), mkArm()];
-  const seg = (m, ax, ay, bx2, by2, r) => { const dx = bx2 - ax, dy = by2 - ay, len = Math.hypot(dx, dy) || 1; m.position.set((ax + bx2)/2, (ay + by2)/2, 0); m.rotation.z = Math.atan2(dy, dx) - Math.PI/2; m.scale.set(r, len, r*.9); return [dx/len, dy/len]; };
-  function drawGear(p, sw){
-    const W = camCanvas.width, Hh = camCanvas.height; if (W !== arW || Hh !== arH) { arW = W; arH = Hh; arR.setSize(W, Hh, false); arC.right = W; arC.bottom = -Hh; arC.updateProjectionMatrix(); }
-    const ok = i => p[i].v > .3, P = i => [p[i].x, -p[i].y];
-    // helmet
-    const eL = p[7], eR = p[8], nose = p[0], a = eL.x < eR.x ? eL : eR, b = eL.x < eR.x ? eR : eL, earsOk = eL.v > .3 && eR.v > .3, ed = Math.hypot(b.x - a.x, b.y - a.y);
-    helmet.visible = nose.v > .3;
-    const R = Math.max(earsOk ? ed*1.3 : 0, sw*.5), hx0 = earsOk ? (a.x + b.x)/2 : nose.x, hy0 = earsOk ? (a.y + b.y)/2 : nose.y, roll = earsOk ? Math.atan2(b.y - a.y, b.x - a.x) : 0;
-    if (helmet.visible) { const c = Math.cos(-roll), s = Math.sin(-roll), nx = ((nose.x - hx0)*c - (nose.y - hy0)*s)/(ed || R), ny = ((nose.x - hx0)*s + (nose.y - hy0)*c)/(ed || R);
-      helmet.position.set(hx0, -hy0 + R*.06, 0); helmet.scale.setScalar(R); helmet.rotation.set(clamp((ny - .12)*1.1, -.45, .45), clamp(nx*1.6, -.6, .6), -roll); }
+  const path = (pts, close = true) => { cctx.beginPath(); pts.forEach((q, i) => i ? cctx.lineTo(q[0], q[1]) : cctx.moveTo(q[0], q[1])); if (close) cctx.closePath(); };
+  function drawSuit(p, sw){
+    const A = p[11], B = p[12], cx = (A.x + B.x)/2, cy = (A.y + B.y)/2, ok = i => p[i].v > .3;
+    const hipOk = ok(23) && ok(24), HA = hipOk ? p[23] : { x:A.x + (cx - A.x)*.15, y:A.y + sw*1.7 }, HB = hipOk ? p[24] : { x:B.x + (cx - B.x)*.15, y:B.y + sw*1.7 };
+    const out = (q, k, dy) => [q.x + Math.sign(q.x - cx)*sw*k, q.y + dy*sw];
+    const sA = out(A, .13, -.1), sB = out(B, .13, -.1), hA = out(HA, .08, .2), hB = out(HB, .08, .2), tiltA = Math.atan2(B.y - A.y, B.x - A.x) + (B.x < A.x ? Math.PI : 0);
+    cctx.lineJoin = cctx.lineCap = 'round';
+    const arm = (s, e, w, glove) => { if (!ok(s) || !ok(e)) return;
+      const seg = (col, lw) => { cctx.strokeStyle = col; cctx.lineWidth = lw; cctx.beginPath(); cctx.moveTo(p[s].x, p[s].y); cctx.lineTo(p[e].x, p[e].y); if (ok(w)) cctx.lineTo(p[w].x, p[w].y); cctx.stroke(); };
+      seg('#0f1317', sw*.33); seg('#e9edf0', sw*.29); seg('#ee8743', sw*.05);
+      if (glove && ok(w)) { const dx = p[w].x - p[e].x, dy = p[w].y - p[e].y, d = Math.hypot(dx, dy) || 1, gx = p[w].x + dx/d*sw*.06, gy = p[w].y + dy/d*sw*.06;
+        cctx.strokeStyle = '#ee8743'; cctx.lineWidth = sw*.31; cctx.beginPath(); cctx.moveTo(p[w].x - dx/d*sw*.08, p[w].y - dy/d*sw*.08); cctx.lineTo(p[w].x, p[w].y); cctx.stroke();
+        cctx.fillStyle = '#23282e'; cctx.beginPath(); cctx.arc(gx, gy, sw*.165, 0, 7); cctx.fill(); cctx.strokeStyle = '#4db3da'; cctx.lineWidth = sw*.025; cctx.beginPath(); cctx.arc(gx, gy, sw*.095, 0, 7); cctx.stroke(); } };
     // torso
-    torso.visible = ok(11) && ok(12);
-    if (torso.visible) { const [ax, ay] = P(11), [bx2, by2] = P(12), cx = (ax + bx2)/2, cy = (ay + by2)/2, hip = ok(23) && ok(24), len = hip ? Math.max(sw*1.1, cy + (p[23].y + p[24].y)/2 + sw*.15) : sw*1.75;
-      let t = Math.atan2(by2 - ay, bx2 - ax); if (bx2 < ax) t += Math.PI; if (t > Math.PI) t -= Math.PI*2;
-      torso.position.set(cx, cy, -R - sw*.5); torso.rotation.z = t; torso.scale.setScalar(sw); body.scale.y = len/sw; }
-    // arms
-    [[11, 13, 15], [12, 14, 16]].forEach(([s, e, w], i) => { const A2 = arms[i]; A2.g.visible = ok(s) && ok(e); if (!A2.g.visible) return; A2.g.position.z = R + sw*.4;
-      const [sx, sy] = P(s), [ex, ey] = P(e); seg(A2.up, sx, sy, ex, ey, sw*.165); A2.elbow.position.set(ex, ey, 0); A2.elbow.scale.setScalar(sw*.16);
-      const hasW = ok(w); [A2.fore, A2.ring, A2.band, A2.glove, A2.palm].forEach(m => m.visible = hasW); if (!hasW) return;
-      const [wx, wy] = P(w), [ux, uy] = seg(A2.fore, ex, ey, wx, wy, sw*.14), rot = Math.atan2(uy, ux) - Math.PI/2;
-      A2.ring.position.set(wx - ux*sw*.06, wy - uy*sw*.06, 0); A2.ring.rotation.z = rot; A2.ring.scale.set(sw*.158, sw*.06, sw*.145);
-      A2.band.position.set(wx - ux*sw*.16, wy - uy*sw*.16, 0); A2.band.rotation.z = rot; A2.band.scale.set(sw*.148, sw*.035, sw*.135);
-      A2.glove.position.set(wx + ux*sw*.1, wy + uy*sw*.1, 0); A2.glove.rotation.z = rot; A2.glove.scale.set(sw*.15, sw*.19, sw*.13);
-      A2.palm.position.set(wx + ux*sw*.12, wy + uy*sw*.12, sw*.09); A2.palm.rotation.z = rot; A2.palm.scale.set(sw*.085, sw*.11, sw*.06); });
-    arR.render(arS, arC); cctx.drawImage(arR.domElement, 0, 0, W, Hh);
+    const g = cctx.createLinearGradient(sA[0], 0, sB[0], 0); g.addColorStop(0, '#c9d0d6'); g.addColorStop(.5, '#f4f6f8'); g.addColorStop(1, '#c9d0d6');
+    path([sA, [cx, cy - sw*.2], sB, hB, hA]); cctx.fillStyle = g; cctx.fill(); cctx.strokeStyle = '#0f1317'; cctx.lineWidth = sw*.03; cctx.stroke();
+    const mix = (a, b, t) => [a[0] + (b[0] - a[0])*t, a[1] + (b[1] - a[1])*t];
+    path([sA, mix(sA, sB, .16), mix(hA, hB, .2), hA]); cctx.fillStyle = '#2a3037'; cctx.fill(); path([sB, mix(sB, sA, .16), mix(hB, hA, .2), hB]); cctx.fill();   // graphite side panels
+    path([mix(sA, sB, .16), mix(sA, sB, .23), mix(hA, hB, .27), mix(hA, hB, .2)]); cctx.fillStyle = '#ee8743'; cctx.fill();
+    path([mix(sB, sA, .16), mix(sB, sA, .23), mix(hB, hA, .27), mix(hB, hA, .2)]); cctx.fill();
+    cctx.strokeStyle = '#2a3037'; cctx.lineWidth = sw*.025; cctx.beginPath(); cctx.moveTo(cx, cy - sw*.1); cctx.lineTo((hA[0] + hB[0])/2, (hA[1] + hB[1])/2); cctx.stroke();   // zip
+    cctx.save(); cctx.translate(cx, cy + sw*.42); cctx.rotate(tiltA);
+    cctx.fillStyle = '#ee8743'; cctx.fillRect(-sw*.36, -sw*.15, sw*.72, sw*.05); cctx.fillStyle = '#17202a'; cctx.font = `700 ${sw*.2}px "Barlow Condensed","Noto Sans SC",sans-serif`; cctx.textAlign = 'center'; cctx.textBaseline = 'middle';
+    cctx.fillText('ARES-1', 0, sw*.05); cctx.fillStyle = '#17799f'; cctx.fillRect(-sw*.36, sw*.2, sw*.2, sw*.06); cctx.fillStyle = '#5a6672'; cctx.font = `600 ${sw*.075}px sans-serif`; cctx.fillText('MARS DRIVER', sw*.12, sw*.235); cctx.restore();
+    cctx.fillStyle = '#23282e'; cctx.beginPath(); cctx.ellipse(cx, cy - sw*.17, sw*.24, sw*.1, tiltA, 0, 7); cctx.fill(); cctx.strokeStyle = '#ee8743'; cctx.lineWidth = sw*.03; cctx.stroke();   // collar
+    arm(11, 13, 15, true); arm(12, 14, 16, true);
+  }
+  function drawHelmet(p, sw){
+    const eL = p[7], eR = p[8], nose = p[0]; if (nose.v < .3) return;
+    const a = eL.x < eR.x ? eL : eR, b = eL.x < eR.x ? eR : eL, earsOk = eL.v > .3 && eR.v > .3;
+    const cx = earsOk ? (a.x + b.x)/2 : nose.x, cy = earsOk ? (a.y + b.y)/2 : nose.y, ang = earsOk ? Math.atan2(b.y - a.y, b.x - a.x) : 0;
+    const R = Math.max(earsOk ? Math.hypot(b.x - a.x, b.y - a.y)*.7 : 0, sw*.29);
+    const c = Math.cos(-ang), s = Math.sin(-ang), nx = clamp(((nose.x - cx)*c - (nose.y - cy)*s)/R, -.5, .5)*.5;   // look left / right shifts the visor
+    cctx.save(); cctx.translate(cx, cy); cctx.rotate(ang); cctx.scale(R, R); cctx.translate(0, -.12); cctx.lineJoin = 'round';
+    const shell = new Path2D(); shell.moveTo(-1.04, .2); shell.bezierCurveTo(-1.1, -.75, -.6, -1.28, 0, -1.28); shell.bezierCurveTo(.6, -1.28, 1.1, -.75, 1.04, .2);
+    shell.bezierCurveTo(1.02, .7, .86, 1.0, .5, 1.22); shell.quadraticCurveTo(0, 1.36, -.5, 1.22); shell.bezierCurveTo(-.86, 1.0, -1.02, .7, -1.04, .2); shell.closePath();
+    const vis = new Path2D(); vis.moveTo(-.8 + nx, -.3); vis.quadraticCurveTo(nx, -.46, .8 + nx, -.3); vis.quadraticCurveTo(.92 + nx, .1, .74 + nx, .42); vis.quadraticCurveTo(nx, .56, -.74 + nx, .42); vis.quadraticCurveTo(-.92 + nx, .1, -.8 + nx, -.3); vis.closePath();
+    const body = new Path2D(shell); body.addPath(vis);
+    const g = cctx.createRadialGradient(-.35, -.75, .1, 0, 0, 1.6); g.addColorStop(0, '#59636e'); g.addColorStop(.45, '#2b3138'); g.addColorStop(1, '#14181c');
+    cctx.fillStyle = g; cctx.fill(body, 'evenodd');
+    cctx.save(); cctx.clip(body, 'evenodd');
+    cctx.fillStyle = '#ee8743'; cctx.beginPath(); cctx.moveTo(-.17, -1.4); cctx.lineTo(.17, -1.4); cctx.lineTo(.24, -.4); cctx.lineTo(-.24, -.4); cctx.closePath(); cctx.fill();      // centre stripe
+    cctx.fillStyle = '#e9edf0'; cctx.fillRect(-.045, -1.4, .09, 1.0);
+    cctx.fillStyle = '#ee8743'; cctx.beginPath(); cctx.moveTo(-1.2, .5); cctx.lineTo(-.55, .72); cctx.lineTo(-.5, .86); cctx.lineTo(-1.2, .68); cctx.closePath(); cctx.fill();
+    cctx.beginPath(); cctx.moveTo(1.2, .5); cctx.lineTo(.55, .72); cctx.lineTo(.5, .86); cctx.lineTo(1.2, .68); cctx.closePath(); cctx.fill();                                           // cheek flashes
+    cctx.fillStyle = '#0c0f12'; [-.2, 0, .2].forEach(x => { cctx.beginPath(); cctx.roundRect(x - .07 + nx*.4, .82, .14, .2, .04); cctx.fill(); });                                     // chin vents
+    cctx.fillStyle = '#4db3ff'; cctx.shadowColor = '#4db3ff'; cctx.shadowBlur = 12; cctx.fillRect(-.62, 1.06, .34, .035); cctx.fillRect(.28, 1.06, .34, .035); cctx.shadowBlur = 0;   // LED strips
+    cctx.fillStyle = '#e9edf0'; cctx.font = '700 .15px "Barlow Condensed",sans-serif'; cctx.textAlign = 'center'; cctx.fillText('ARES-1', nx*.6, -.52);
+    cctx.restore();
+    const vg = cctx.createLinearGradient(-.8, -.4, .8, .5); vg.addColorStop(0, 'rgba(255,214,120,.55)'); vg.addColorStop(.55, 'rgba(214,128,44,.34)'); vg.addColorStop(1, 'rgba(255,140,60,.30)');
+    cctx.fillStyle = vg; cctx.fill(vis);
+    cctx.save(); cctx.clip(vis); cctx.fillStyle = 'rgba(255,255,255,.32)'; cctx.beginPath(); cctx.moveTo(-.9, -.1); cctx.quadraticCurveTo(-.3, -.5, .5, -.42); cctx.lineTo(.6, -.36); cctx.quadraticCurveTo(-.25, -.4, -.9, .05); cctx.closePath(); cctx.fill(); cctx.restore();
+    cctx.lineWidth = .06; cctx.strokeStyle = '#0c0f12'; cctx.stroke(vis); cctx.lineWidth = .035; cctx.strokeStyle = '#0a0c0f'; cctx.stroke(shell);
+    cctx.restore();
   }
   function drawCam(){
     const W = camCanvas.width, Hh = camCanvas.height;
@@ -340,7 +314,8 @@ export async function openExperience(opts = {}){
       if (!S.pose) { cctx.fillStyle = '#93a0ab'; cctx.font = '16px sans-serif'; cctx.textAlign = 'center'; cctx.fillText('摄像头画面', W/2, Hh/2); } }
     const p = S.pose; if (!p) { $v('camhint').textContent = ''; return; }
     const sw = Math.hypot(p[11].x - p[12].x, p[11].y - p[12].y) || 1;
-    drawGear(p, sw);
+    if (p[11].v > .3 && p[12].v > .3) drawSuit(p, sw);
+    drawHelmet(p, sw);
     const L = p[15], R = p[16];
     if (L.v > .5 && R.v > .5) {   // the imaginary steering wheel between the hands
       const mx = (L.x + R.x)/2, my = (L.y + R.y)/2, r = Math.hypot(L.x - R.x, L.y - R.y)/2, a = Math.atan2(R.y - L.y, R.x - L.x) + (R.x < L.x ? Math.PI : 0);
@@ -439,7 +414,7 @@ export async function openExperience(opts = {}){
     if (!active) return; active = null; window.__xpActive = false; cancelAnimationFrame(S.raf); ro.disconnect();
     removeEventListener('keydown', onKey); removeEventListener('keyup', onKey);
     if (stream) stream.getTracks().forEach(t => t.stop()); try { pose && pose.close(); } catch (e) {}
-    arPm.dispose(); arR.dispose(); arR.forceContextLoss(); pm.dispose();   // car geometry is shared with the main page, so nothing else is disposed here
+    pm.dispose();   // car geometry is shared with the main page, so nothing else is disposed here
     renderer.dispose(); renderer.forceContextLoss(); root.remove(); if (DEBUG) delete window.__xp;
   }
   if (DEBUG) window.__xp = { S, enter, close, setPose(lm){ fakePose = lm; }, setView(v){ S.view = v; } };
